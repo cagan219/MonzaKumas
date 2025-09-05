@@ -1,0 +1,143 @@
+{
+  "navigation": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "about": "About",
+    "contact": "Contact",
+    "admin": "Admin"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "language": "Language"
+  },
+  "catalog": {
+    "title": "Fabric Catalog",
+    "searchPlaceholder": "Search fabrics...",
+    "filters": {
+      "pattern": "Pattern",
+      "color": "Color",
+      "swatchType": "Swatch Type",
+      "priceRange": "Price Range",
+      "availability": "Availability",
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock"
+    },
+    "fabric": {
+      "code": "Code",
+      "pattern": "Pattern",
+      "color": "Color",
+      "swatchType": "Swatch Type",
+      "price": "Price",
+      "pricePerMeter": "Price per meter",
+      "available": "Available",
+      "meters": "meters",
+      "description": "Description",
+      "composition": "Composition",
+      "variants": "Color Options",
+      "addToCart": "Add to Cart",
+      "quantity": "Quantity (meters)",
+      "selectColor": "Select Color"
+    }
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "remove": "Remove",
+    "update": "Update"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "customerInfo": "Customer Information",
+    "orderSummary": "Order Summary",
+    "form": {
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company (Optional)",
+      "address": "Address (Optional)",
+      "notes": "Notes",
+      "namePlaceholder": "Enter your full name",
+      "emailPlaceholder": "Enter your email",
+      "phonePlaceholder": "Enter your phone number",
+      "companyPlaceholder": "Company name",
+      "addressPlaceholder": "Your address",
+      "notesPlaceholder": "Any additional notes"
+    },
+    "placeOrder": "Place Order",
+    "orderPlaced": "Order placed successfully!",
+    "orderNumber": "Order Number"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "dashboard": "Dashboard",
+    "fabrics": "Fabrics",
+    "orders": "Orders",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": {
+      "title": "Admin Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Login",
+      "error": "Invalid credentials"
+    },
+    "dashboard": {
+      "totalFabrics": "Total Fabrics",
+      "totalOrders": "Total Orders",
+      "pendingOrders": "Pending Orders",
+      "lowStock": "Low Stock Items"
+    },
+    "fabrics": {
+      "add": "Add New Fabric",
+      "edit": "Edit Fabric",
+      "delete": "Delete Fabric",
+      "visible": "Visible to customers",
+      "hidden": "Hidden from customers",
+      "variants": "Variants",
+      "addVariant": "Add Variant"
+    },
+    "orders": {
+      "orderNumber": "Order #",
+      "customer": "Customer",
+      "status": "Status",
+      "date": "Date",
+      "total": "Total",
+      "view": "View Details",
+      "updateStatus": "Update Status",
+      "statuses": {
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "REJECTED": "Rejected",
+        "FULFILLED": "Fulfilled"
+      }
+    }
+  },
+  "footer": {
+    "company": "Monza Tekstil",
+    "description": "Premium fabrics for suits and formal wear",
+    "contact": "Contact Us",
+    "email": "info@monzatekstil.com",
+    "phone": "+90 XXX XXX XX XX",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

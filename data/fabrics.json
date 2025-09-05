@@ -1,0 +1,50 @@
+[
+  {
+    "id": "fab-001",
+    "slug": "premium-wool-navy",
+    "name": "A Young Woman in Colorful Jacket",
+    "images": ["https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=400&h=500&fit=crop"],
+    "pattern": "Solid",
+    "colors": ["Pink", "Green", "Yellow"],
+    "swatchType": "Super 120s",
+    "lengthMeters": 50,
+    "pricePerMeter": 108,
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "fab-002",
+    "slug": "modern-casual-jacket",
+    "name": "Modern Casual Jacket",
+    "images": ["https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=500&fit=crop"],
+    "pattern": "Contemporary",
+    "colors": ["Orange", "Blue"],
+    "swatchType": "Super 130s",
+    "lengthMeters": 35,
+    "pricePerMeter": 95,
+    "createdAt": "2024-01-02T00:00:00.000Z"
+  },
+  {
+    "id": "fab-003",
+    "slug": "premium-fabric-collection",
+    "name": "Premium Fabric Collection",
+    "images": ["https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=500&fit=crop"],
+    "pattern": "Textured",
+    "colors": ["Pink", "White"],
+    "swatchType": "Silk Mix",
+    "lengthMeters": 25,
+    "pricePerMeter": 120,
+    "createdAt": "2024-01-03T00:00:00.000Z"
+  },
+  {
+    "id": "fab-004",
+    "slug": "elegant-textile-design",
+    "name": "Elegant Textile Design",
+    "images": ["https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop"],
+    "pattern": "Classic",
+    "colors": ["Beige", "Cream"],
+    "swatchType": "Super 110s",
+    "lengthMeters": 42,
+    "pricePerMeter": 85,
+    "createdAt": "2024-01-04T00:00:00.000Z"
+  }
+]

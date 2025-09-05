@@ -1,0 +1,143 @@
+{
+  "navigation": {
+    "home": "Ana Sayfa",
+    "catalog": "Katalog",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "admin": "Yönetici"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "success": "Başarılı",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "add": "Ekle",
+    "search": "Ara",
+    "filter": "Filtrele",
+    "clear": "Temizle",
+    "submit": "Gönder",
+    "back": "Geri",
+    "next": "İleri",
+    "previous": "Önceki",
+    "language": "Dil"
+  },
+  "catalog": {
+    "title": "Kumaş Kataloğu",
+    "searchPlaceholder": "Kumaş ara...",
+    "filters": {
+      "pattern": "Desen",
+      "color": "Renk",
+      "swatchType": "Numune Tipi",
+      "priceRange": "Fiyat Aralığı",
+      "availability": "Stok Durumu",
+      "inStock": "Stokta",
+      "outOfStock": "Tükendi"
+    },
+    "fabric": {
+      "code": "Kod",
+      "pattern": "Desen",
+      "color": "Renk",
+      "swatchType": "Numune Tipi",
+      "price": "Fiyat",
+      "pricePerMeter": "Metre fiyatı",
+      "available": "Mevcut",
+      "meters": "metre",
+      "description": "Açıklama",
+      "composition": "Kompozisyon",
+      "variants": "Renk Seçenekleri",
+      "addToCart": "Sepete Ekle",
+      "quantity": "Miktar (metre)",
+      "selectColor": "Renk Seçin"
+    }
+  },
+  "cart": {
+    "title": "Alışveriş Sepeti",
+    "empty": "Sepetiniz boş",
+    "item": "Ürün",
+    "quantity": "Miktar",
+    "price": "Fiyat",
+    "total": "Toplam",
+    "checkout": "Siparişi Tamamla",
+    "remove": "Kaldır",
+    "update": "Güncelle"
+  },
+  "checkout": {
+    "title": "Sipariş",
+    "customerInfo": "Müşteri Bilgileri",
+    "orderSummary": "Sipariş Özeti",
+    "form": {
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "company": "Firma (Opsiyonel)",
+      "address": "Adres (Opsiyonel)",
+      "notes": "Notlar",
+      "namePlaceholder": "Ad soyadınızı girin",
+      "emailPlaceholder": "E-posta adresinizi girin",
+      "phonePlaceholder": "Telefon numaranızı girin",
+      "companyPlaceholder": "Firma adı",
+      "addressPlaceholder": "Adresiniz",
+      "notesPlaceholder": "Ek notlarınız"
+    },
+    "placeOrder": "Siparişi Ver",
+    "orderPlaced": "Sipariş başarıyla oluşturuldu!",
+    "orderNumber": "Sipariş Numarası"
+  },
+  "admin": {
+    "title": "Yönetici Paneli",
+    "dashboard": "Dashboard",
+    "fabrics": "Kumaşlar",
+    "orders": "Siparişler",
+    "settings": "Ayarlar",
+    "logout": "Çıkış",
+    "login": {
+      "title": "Yönetici Girişi",
+      "email": "E-posta",
+      "password": "Şifre",
+      "submit": "Giriş",
+      "error": "Geçersiz kimlik bilgileri"
+    },
+    "dashboard": {
+      "totalFabrics": "Toplam Kumaş",
+      "totalOrders": "Toplam Sipariş",
+      "pendingOrders": "Bekleyen Siparişler",
+      "lowStock": "Stoku Az Ürünler"
+    },
+    "fabrics": {
+      "add": "Yeni Kumaş Ekle",
+      "edit": "Kumaş Düzenle",
+      "delete": "Kumaş Sil",
+      "visible": "Müşterilere görünür",
+      "hidden": "Müşterilerden gizli",
+      "variants": "Varyantlar",
+      "addVariant": "Varyant Ekle"
+    },
+    "orders": {
+      "orderNumber": "Sipariş #",
+      "customer": "Müşteri",
+      "status": "Durum",
+      "date": "Tarih",
+      "total": "Toplam",
+      "view": "Detayları Gör",
+      "updateStatus": "Durumu Güncelle",
+      "statuses": {
+        "PENDING": "Bekliyor",
+        "CONFIRMED": "Onaylandı",
+        "REJECTED": "Reddedildi",
+        "FULFILLED": "Tamamlandı"
+      }
+    }
+  },
+  "footer": {
+    "company": "Monza Tekstil",
+    "description": "Takım elbise ve resmi giyim için kaliteli kumaşlar",
+    "contact": "Bize Ulaşın",
+    "email": "info@monzatekstil.com",
+    "phone": "+90 XXX XXX XX XX",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Şartları"
+  }
+}

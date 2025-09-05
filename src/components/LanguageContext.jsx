@@ -1,0 +1,502 @@
+import React, { createContext, useContext, useState, useEffect } from 'react'
+
+const translations = {
+  tr: {
+    // Header & Navigation
+    'header.home': 'Ana Sayfa',
+    'header.catalog': 'Katalog',
+    'header.about': 'Hakkımızda',
+    'header.contact': 'İletişim',
+    'header.order': 'Sipariş',
+    'common.menu': 'Menü',
+    
+    // Hero Section
+    'hero.badge': '1999\'dan Beri Premium Kalite Kumaşlar',
+    'hero.title.line1': 'Modern Üretim için',
+    'hero.title.line2': 'Premium Tekstil Çözümleri',
+    'hero.subtitle': 'Endüstriyel tekstillerden premium moda malzemelerine kadar geniş yelpazedeki yüksek kaliteli kumaş koleksiyonumuzu keşfedin. Dünya çapında üreticilerin güvendiği marka.',
+    'hero.cta': 'Katalogumuzı İnceleyin',
+    'hero.learnMore': 'Daha Fazla Bilgi',
+    'hero.stats.experience': 'Yıl Deneyim',
+    'hero.stats.customers': 'Mutlu Müşteri',
+    'hero.stats.countries': 'Ülkeye Hizmet',
+    
+    // Products & Catalog
+    'products.title': 'Premium Kumaşlarımız',
+    'products.showing': '{count} üründen {showing} tanesi gösteriliyor',
+    'products.noResults': 'Ürün bulunamadı',
+    'products.noResultsDesc': 'Aradığınızı bulmak için filtrelerinizi ayarlayın veya arama terimlerinizi değiştirin.',
+    'products.clearFilters': 'Tüm Filtreleri Temizle',
+    'products.loadMore': 'Daha Fazla Ürün Yükle',
+    'products.loading': 'Yükleniyor...',
+    'catalog.title': 'Kumaş Katalogu',
+    'catalog.subtitle': 'Premium kumaş ve tekstil ürünlerimizin tam koleksiyonuna göz atın',
+    'catalog.products': 'Ürünler',
+    
+    // Filters
+    'filters.search': 'Kumaş ara...',
+    'filters.filters': 'Filtreler',
+    'filters.clearAll': 'Tümünü Temizle',
+    'filters.pattern': 'Desen',
+    'filters.colors': 'Renkler',
+    'filters.swatchType': 'Malzeme',
+    'filters.availability': 'Stok Durumu',
+    'filters.priceRange': 'Fiyat Aralığı',
+    'filters.minPrice': 'Min Fiyat',
+    'filters.maxPrice': 'Maks Fiyat',
+    'filters.inStock': 'Stokta Var',
+    'filters.outOfStock': 'Stokta Yok',
+    
+    // Product Details
+    'product.inStock': 'Stokta',
+    'product.outOfStock': 'Stokta Yok',
+    'product.available': 'Mevcut',
+    'product.metersAvailable': 'metre mevcut',
+    'product.perMeter': 'metreye',
+    'product.meters': 'metre',
+    'product.pattern': 'Desen',
+    'product.colors': 'Renkler',
+    'product.swatchType': 'Malzeme',
+    'product.description': 'Açıklama',
+    'product.back': 'Geri',
+    'product.backToCatalog': 'Kataloğa Dön',
+    'product.notFound': 'Ürün bulunamadı',
+    
+    // Order Form
+    'order.title': 'Sipariş Ver',
+    'order.quantity': 'Miktar',
+    'order.meters': 'metre',
+    'order.available': 'mevcut',
+    'order.perMeter': 'metreye',
+    'order.total': 'Toplam',
+    'order.customerInfo': 'Müşteri Bilgileri',
+    'order.name': 'Ad Soyad',
+    'order.namePlaceholder': 'Adınızı ve soyadınızı girin',
+    'order.phone': 'Telefon Numarası',
+    'order.phonePlaceholder': 'Telefon numaranızı girin',
+    'order.email': 'E-posta Adresi',
+    'order.emailPlaceholder': 'E-posta adresinizi girin',
+    'order.note': 'Ek Notlar',
+    'order.optional': 'İsteğe Bağlı',
+    'order.notePlaceholder': 'Özel gereksinimler veya notlar...',
+    'order.processing': 'İşleniyor...',
+    'order.placeOrder': 'Sipariş Ver',
+    'order.disclaimer': 'Bu siparişi vererek hüküm ve koşullarımızı kabul etmiş olursunuz. Detayları onaylamak ve ödeme ayarlaması yapmak için sizinle iletişime geçeceğiz.',
+    'order.success': 'Sipariş Verildi!',
+    'order.successMessage': 'Siparişiniz başarıyla gönderildi. Kısa süre içinde sizinle iletişime geçeceğiz.',
+    'order.error': 'Sipariş Hatası',
+    'order.errorMessage': 'Sipariş gönderilemedi. Lütfen tekrar deneyin.',
+    'order.insufficientStock': 'Bu miktar için yeterli stok yok.',
+    'order.outOfStock': 'Stokta Yok',
+    'order.outOfStockMessage': 'Bu ürün şu anda stokta yok. Stok güncellemeleri için bizimle iletişime geçin.',
+    'order.contactUs': 'Bize Ulaşın',
+    
+    // Contact
+    'contact.title': 'Bize Ulaşın',
+    'contact.subtitle': 'Sorularınız, siparişleriniz veya özel kumaş çözümleri için ekibimizle iletişime geçin',
+    'contact.info.title': 'İletişim Kurun',
+    'contact.info.description': 'Kumaşlarımız hakkında sorularınız var mı veya özel bir çözüme mi ihtiyacınız var? Size yardımcı olmak için buradayız.',
+    'contact.info.address.title': 'Adres',
+    'contact.info.address.content': 'Akşemsettin, Elmas Sk. No:15, 34070 Eyüpsultan/İstanbul, Türkiye',
+    'contact.info.phone.title': 'Telefon',
+    'contact.info.phone.content': '+90 532 747 3215',
+    'contact.info.email.title': 'E-posta',
+    'contact.info.email.content': 'monzakumas@gmail.com',
+    'contact.info.hours.title': 'Çalışma Saatleri',
+    'contact.info.hours.content': 'Pazartesi - Cuma: 08:00 - 18:00 (GMT+3)',
+    'contact.form.title': 'Bize Mesaj Gönderin',
+    'contact.form.name': 'Ad Soyad',
+    'contact.form.namePlaceholder': 'Adınızı ve soyadınızı girin',
+    'contact.form.phone': 'Telefon Numarası',
+    'contact.form.phonePlaceholder': 'Telefon numaranızı girin',
+    'contact.form.email': 'E-posta Adresi',
+    'contact.form.emailPlaceholder': 'E-posta adresinizi girin',
+    'contact.form.message': 'Mesaj',
+    'contact.form.messagePlaceholder': 'Gereksinimlerinizi veya sorularınızı bize anlatın...',
+    'contact.form.send': 'Mesaj Gönder',
+    'contact.form.success': 'Mesaj Gönderildi!',
+    'contact.form.successMessage': 'Bizimle iletişime geçtiğiniz için teşekkürler. Kısa süre içinde size dönüş yapacağız.',
+    'contact.form.error': 'Hata',
+    'contact.form.errorMessage': 'Mesaj gönderilemedi. Lütfen tekrar deneyin.',
+    'contact.form.fields.name.label': 'Ad Soyad *',
+    'contact.form.fields.name.placeholder': 'Adınızı ve soyadınızı girin',
+    'contact.form.fields.phone.label': 'Telefon Numarası *',
+    'contact.form.fields.phone.placeholder': 'Telefon numaranızı girin',
+    'contact.form.fields.email.label': 'E-posta Adresi *',
+    'contact.form.fields.email.placeholder': 'E-posta adresinizi girin',
+    'contact.form.fields.subject.label': 'Konu *',
+    'contact.form.fields.subject.placeholder': 'Konu seçiniz',
+    'contact.form.fields.message.label': 'Mesaj *',
+    'contact.form.fields.message.placeholder': 'Gereksinimlerinizi veya sorularınızı bize anlatın...',
+    'contact.form.subjects.inquiry': 'Genel Soru',
+    'contact.form.subjects.quotation': 'Fiyat Teklifi',
+    'contact.form.subjects.customOrder': 'Özel Sipariş',
+    'contact.form.subjects.technicalSupport': 'Teknik Destek',
+    'contact.form.subjects.partnership': 'İş Ortaklığı',
+    'contact.form.subjects.other': 'Diğer',
+    'contact.form.validation.emailOrPhone': 'E-posta adresi veya telefon numarası girmelisiniz',
+    'contact.form.successTitle': 'Mesaj Gönderildi!',
+    'contact.form.sendMessage': 'Mesaj Gönder',
+    'contact.form.sending': 'Gönderiliyor...',
+    'contact.getInTouch': 'İletişime Geçin',
+    'contact.description': 'Kumaşlarımız hakkında sorularınız var mı veya özel bir çözüme mi ihtiyacınız var? Size yardımcı olmak için buradayız.',
+    
+    // About
+    'about.title': 'Monza Tekstil Hakkında',
+    'about.subtitle': 'Premium tekstil üretimi ve yenilikçi kumaş çözümlerinde güvenilir ortağınız',
+    'about.story.title': 'Hikayemiz',
+    'about.story.paragraph1': '1999 yılında kurulan Monza Tekstil, kalite ve inovasyonla tekstil sektörünü devrim niteliğinde dönüştürme vizyonuyla başlayan küçük bir aile işletmesiydi.',
+    'about.story.paragraph2': 'Yıllar içinde, moda, endüstriyel ve özel uygulamalar için premium kumaşlarla dünya çapında müşterilere hizmet veren lider bir üretici haline geldik.',
+    'about.story.paragraph3': 'Bugün, sınırları zorlamaya devam ediyor, istisnai tekstil çözümleri sunmak için geleneksel zanaatkarlığı son teknoloji ile birleştiriyoruz.',
+    'about.stats.title': 'Etkimiz',
+    'about.stats.experience': 'Yıl Deneyim',
+    'about.stats.customers': 'Memnun Müşteri',
+    'about.stats.support': '7/24 Destek',
+    'about.stats.countries': 'Hizmet Verilen Ülke',
+    'about.mission.title': 'Misyonumuz',
+    'about.mission.description': 'İnovatif tasarım, üstün kalite ve sürdürülebilir uygulamaları birleştiren dünya standartlarında tekstil çözümleri sunmak, müşterilerimizin hedeflerine ulaşmalarını sağlarken daha iyi bir dünyaya katkıda bulunmak.',
+    'about.values.quality.title': 'Kalite Mükemmelliği',
+    'about.values.quality.description': 'Ham maddelerden bitmiş ürünlere kadar üretimimizin her aşamasında en yüksek standartları koruyoruz.',
+    'about.values.sustainability.title': 'Sürdürülebilirlik',
+    'about.values.sustainability.description': 'Gelecek nesiller için gezegeni koruyan çevre dostu uygulamalara ve sorumlu üretime kararlıyız.',
+    'about.values.innovation.title': 'İnovasyon',
+    'about.values.innovation.description': 'Sektör trendlerinin ve müşteri ihtiyaçlarının önünde olmak için sürekli olarak yeni teknolojilere ve süreçlere yatırım yapıyoruz.',
+    
+    // Footer
+    'footer.company': 'Monza Tekstil',
+    'footer.description': 'Endüstriyel ve moda uygulamaları için premium kumaş ve tekstil ürünlerinin lider üreticisi. Yaptığımız her şeyin kalbinde kalite, inovasyon ve sürdürülebilirlik.',
+    'footer.quickLinks': 'Hızlı Bağlantılar',
+    'footer.contactInfo': 'İletişim Bilgileri',
+    'footer.privacyPolicy': 'Gizlilik Politikası',
+    'footer.termsOfService': 'Hizmet Şartları',
+    'nav.home': 'Ana Sayfa',
+    'nav.catalog': 'Katalog',
+    'nav.about': 'Hakkımızda',
+    'nav.contact': 'İletişim',
+    'nav.menu': 'Menü',
+    
+    'catalog.allProducts': 'Tüm Ürünler',
+    'catalog.showingResults': '{current} / {total} ürün gösteriliyor',
+    'catalog.noProductsFound': 'Ürün bulunamadı',
+    'catalog.loading': 'Yükleniyor...',
+    'catalog.loadMore': 'Daha Fazla Ürün Yükle',
+    'catalog.noResults.title': 'Ürün bulunamadı',
+    'catalog.noResults.message': 'Aradığınızı bulmak için filtrelerinizi veya arama terimlerinizi ayarlamayı deneyin.',
+    'catalog.clearFilters': 'Tüm Filtreleri Temizle',
+    
+    // Gallery & Misc
+    'gallery.noImages': 'Resim mevcut değil',
+    'notFound.title': 'Sayfa Bulunamadı',
+    'notFound.message': 'Aradığınız sayfa mevcut değil veya taşınmış.',
+    'notFound.goHome': 'Ana Sayfaya Git',
+    'notFound.goBack': 'Geri Git',
+    'notFound.browseCatalog': 'Kataloğa Göz At',
+    'notFound.helpText': 'URL\'yi kontrol edin veya aradığınızı bulmak için yukarıdaki navigasyonu kullanın.',
+    
+    // Common
+    'common.currency': '₺',
+    'common.loading': 'Yükleniyor...',
+    'common.error': 'Hata oluştu',
+    'common.tryAgain': 'Tekrar dene',
+    'common.close': 'Kapat',
+    'common.open': 'Aç',
+  },
+  en: {
+    // Header & Navigation
+    'header.home': 'Home',
+    'header.catalog': 'Catalog',
+    'header.about': 'About',
+    'header.contact': 'Contact',
+    'header.order': 'Order',
+    'common.menu': 'Menu',
+    
+    // Hero Section
+    'hero.badge': 'Premium Quality Fabrics Since 1999',
+    'hero.title.line1': 'Premium Textile Solutions for',
+    'hero.title.line2': 'Modern Manufacturing',
+    'hero.subtitle': 'Discover our extensive collection of high-quality fabrics, from industrial textiles to premium fashion materials. Trusted by manufacturers worldwide.',
+    'hero.cta': 'Explore Our Catalog',
+    'hero.learnMore': 'Learn More',
+    'hero.stats.experience': 'Years of Experience',
+    'hero.stats.customers': 'Happy Customers',
+    'hero.stats.countries': 'Countries Served',
+    
+    // Products & Catalog
+    'products.title': 'Our Premium Fabrics',
+    'products.showing': 'Showing {showing} of {count} products',
+    'products.noResults': 'No products found',
+    'products.noResultsDesc': 'Try adjusting your filters or search terms to find what you\'re looking for.',
+    'products.clearFilters': 'Clear All Filters',
+    'products.loadMore': 'Load More Products',
+    'products.loading': 'Loading...',
+    'catalog.title': 'Fabric Catalog',
+    'catalog.subtitle': 'Browse our complete collection of premium fabrics and textiles',
+    'catalog.products': 'Products',
+    
+    // Filters
+    'filters.search': 'Search fabrics...',
+    'filters.filters': 'Filters',
+    'filters.clearAll': 'Clear All',
+    'filters.pattern': 'Pattern',
+    'filters.colors': 'Colors',
+    'filters.swatchType': 'Material',
+    'filters.availability': 'Availability',
+    'filters.priceRange': 'Price Range',
+    'filters.minPrice': 'Min Price',
+    'filters.maxPrice': 'Max Price',
+    'filters.inStock': 'In Stock',
+    'filters.outOfStock': 'Out of Stock',
+    
+    // Product Details
+    'product.inStock': 'In Stock',
+    'product.outOfStock': 'Out of Stock',
+    'product.available': 'Available',
+    'product.metersAvailable': 'meters available',
+    'product.perMeter': 'per meter',
+    'product.meters': 'meters',
+    'product.pattern': 'Pattern',
+    'product.colors': 'Colors',
+    'product.swatchType': 'Material',
+    'product.description': 'Description',
+    'product.back': 'Back',
+    'product.backToCatalog': 'Back to Catalog',
+    'product.notFound': 'Product not found',
+    
+    // Order Form
+    'order.title': 'Place Order',
+    'order.quantity': 'Quantity',
+    'order.meters': 'meters',
+    'order.available': 'available',
+    'order.perMeter': 'per meter',
+    'order.total': 'Total',
+    'order.customerInfo': 'Customer Information',
+    'order.name': 'Full Name',
+    'order.namePlaceholder': 'Enter your full name',
+    'order.phone': 'Phone Number',
+    'order.phonePlaceholder': 'Enter your phone number',
+    'order.email': 'Email Address',
+    'order.emailPlaceholder': 'Enter your email address',
+    'order.note': 'Additional Notes',
+    'order.optional': 'Optional',
+    'order.notePlaceholder': 'Any special requirements or notes...',
+    'order.processing': 'Processing...',
+    'order.placeOrder': 'Place Order',
+    'order.disclaimer': 'By placing this order, you agree to our terms and conditions. We\'ll contact you to confirm details and arrange payment.',
+    'order.success': 'Order Placed!',
+    'order.successMessage': 'Your order has been submitted successfully. We\'ll contact you soon.',
+    'order.error': 'Order Error',
+    'order.errorMessage': 'Failed to submit order. Please try again.',
+    'order.insufficientStock': 'Insufficient stock for this quantity.',
+    'order.outOfStock': 'Out of Stock',
+    'order.outOfStockMessage': 'This product is currently out of stock. Contact us for availability updates.',
+    'order.contactUs': 'Contact Us',
+    
+    // Contact
+    'contact.title': 'Contact Us',
+    'contact.subtitle': 'Get in touch with our team for inquiries, orders, or custom fabric solutions',
+    'contact.info.title': 'Get in Touch',
+    'contact.info.description': 'Have questions about our fabrics or need a custom solution? We\'re here to help.',
+    'contact.info.address.title': 'Address',
+    'contact.info.address.content': 'Akşemsettin, Elmas Sk. No:15, 34070 Eyüpsultan/Istanbul, Turkey',
+    'contact.info.phone.title': 'Phone',
+    'contact.info.phone.content': '+90 532 747 3215',
+    'contact.info.email.title': 'Email',
+    'contact.info.email.content': 'monzakumas@gmail.com',
+    'contact.info.hours.title': 'Business Hours',
+    'contact.info.hours.content': 'Monday - Friday: 8:00 AM - 6:00 PM (GMT+3)',
+    'contact.form.title': 'Send us a Message',
+    'contact.form.name': 'Full Name',
+    'contact.form.namePlaceholder': 'Enter your full name',
+    'contact.form.phone': 'Phone Number',
+    'contact.form.phonePlaceholder': 'Enter your phone number',
+    'contact.form.email': 'Email Address',
+    'contact.form.emailPlaceholder': 'Enter your email address',
+    'contact.form.message': 'Message',
+    'contact.form.messagePlaceholder': 'Tell us about your requirements or questions...',
+    'contact.form.send': 'Send Message',
+    'contact.form.success': 'Message Sent!',
+    'contact.form.successMessage': 'Thank you for contacting us. We\'ll get back to you soon.',
+    'contact.form.error': 'Error',
+    'contact.form.errorMessage': 'Failed to send message. Please try again.',
+    'contact.form.fields.name.label': 'Full Name *',
+    'contact.form.fields.name.placeholder': 'Enter your full name',
+    'contact.form.fields.phone.label': 'Phone Number *',
+    'contact.form.fields.phone.placeholder': 'Enter your phone number',
+    'contact.form.fields.email.label': 'Email Address *',
+    'contact.form.fields.email.placeholder': 'Enter your email address',
+    'contact.form.fields.subject.label': 'Subject *',
+    'contact.form.fields.subject.placeholder': 'Please select a subject',
+    'contact.form.fields.message.label': 'Message *',
+    'contact.form.fields.message.placeholder': 'Tell us about your requirements or questions...',
+    'contact.form.subjects.inquiry': 'General Inquiry',
+    'contact.form.subjects.quotation': 'Price Quotation',
+    'contact.form.subjects.customOrder': 'Custom Order',
+    'contact.form.subjects.technicalSupport': 'Technical Support',
+    'contact.form.subjects.partnership': 'Business Partnership',
+    'contact.form.subjects.other': 'Other',
+    'contact.form.validation.emailOrPhone': 'Please provide either email or phone number',
+    'contact.form.successTitle': 'Message Sent!',
+    'contact.form.sendMessage': 'Send Message',
+    'contact.form.sending': 'Sending...',
+    'contact.getInTouch': 'Get in Touch',
+    'contact.description': 'Have questions about our fabrics or need a custom solution? We\'re here to help.',
+    
+    // About
+    'about.title': 'About Monza Tekstil',
+    'about.subtitle': 'Your trusted partner in premium textile manufacturing and innovative fabric solutions',
+    'about.story.title': 'Our Story',
+    'about.story.paragraph1': 'Founded in 1999, Monza Tekstil began as a small family business with a vision to revolutionize the textile industry through quality and innovation.',
+    'about.story.paragraph2': 'Over the years, we\'ve grown into a leading manufacturer, serving clients worldwide with premium fabrics for fashion, industrial, and specialized applications.',
+    'about.story.paragraph3': 'Today, we continue to push boundaries, combining traditional craftsmanship with cutting-edge technology to deliver exceptional textile solutions.',
+    'about.stats.title': 'Our Impact',
+    'about.stats.experience': 'Years of Experience',
+    'about.stats.customers': 'Satisfied Customers',
+    'about.stats.support': '24/7 Support',
+    'about.stats.countries': 'Countries Served',
+    'about.mission.title': 'Our Mission',
+    'about.mission.description': 'To deliver world-class textile solutions that combine innovative design, superior quality, and sustainable practices, empowering our clients to achieve their goals while contributing to a better world.',
+    'about.values.quality.title': 'Quality Excellence',
+    'about.values.quality.description': 'We maintain the highest standards in every aspect of our production, from raw materials to finished products.',
+    'about.values.sustainability.title': 'Sustainability',
+    'about.values.sustainability.description': 'Committed to eco-friendly practices and responsible manufacturing that protects our planet for future generations.',
+    'about.values.innovation.title': 'Innovation',
+    'about.values.innovation.description': 'Continuously investing in new technologies and processes to stay ahead of industry trends and customer needs.',
+    
+    // Footer
+    'footer.company': 'Monza Tekstil',
+    'footer.description': 'Leading manufacturer of premium fabrics and textiles for industrial and fashion applications. Quality, innovation, and sustainability at the heart of everything we do.',
+    'footer.quickLinks': 'Quick Links',
+    'footer.contactInfo': 'Contact Info',
+    'footer.privacyPolicy': 'Privacy Policy',
+    'footer.termsOfService': 'Terms of Service',
+    'nav.home': 'Home',
+    'nav.catalog': 'Catalog',
+    'nav.about': 'About',
+    'nav.contact': 'Contact',
+    'nav.menu': 'Menu',
+    
+    // Contact
+    'contact.title': 'Contact',
+    'contact.subtitle': 'Have questions about our fabric collection?',
+    'contact.success': 'Success!',
+    'contact.successMessage': 'Your message has been sent successfully. We will get back to you shortly.',
+    'contact.sendAnother': 'Send Another Message',
+    'contact.name': 'Your Name',
+    'contact.namePlaceholder': 'Enter your name',
+    'contact.email': 'Email',
+    'contact.emailPlaceholder': 'Enter your email address',
+    'contact.phone': 'Phone',
+    'contact.phonePlaceholder': 'Enter your phone number',
+    'contact.message': 'Your Message',
+    'contact.messagePlaceholder': 'Type your message here...',
+    'contact.send': 'Send',
+    'contact.sending': 'Sending...',
+    'contact.address': 'Address',
+    
+    // About
+    'about.title': 'About Us',
+    'about.subtitle': 'Leading in premium fabric and textile solutions',
+    'about.story.title': 'Our Story',
+    'about.story.paragraph1': 'Founded in 1995, Monza Tekstil is one of the pioneering companies that combines quality and innovation in the textile industry.',
+    'about.story.paragraph2': 'With years of experience and the power of modern technology, we aim to provide the best service to our customers.',
+    'about.values.title': 'Our Values',
+    'about.values.subtitle': 'The values that make us different',
+    'about.values.quality.title': 'Quality',
+    'about.values.quality.description': 'We maintain the highest quality standards in every product',
+    'about.values.innovation.title': 'Innovation',
+    'about.values.innovation.description': 'We act with a continuous development and innovation approach',
+    'about.values.service.title': 'Service',
+    'about.values.service.description': 'Customer satisfaction is our priority',
+    'about.team.title': 'Our Team',
+    'about.team.subtitle': 'Our experienced and expert staff',
+    'about.team.member1.name': 'Ali Özkan',
+    'about.team.member1.role': 'General Manager',
+    'about.team.member1.bio': '20 years of textile experience',
+    'about.team.member2.name': 'Ayşe Kaya',
+    'about.team.member2.role': 'Sales Manager',
+    'about.team.member2.bio': '15 years of field experience',
+    'about.team.member3.name': 'Mehmet Demir',
+    'about.team.member3.role': 'Production Manager',
+    'about.team.member3.bio': '18 years of production experience',
+    'about.history.title': 'Our History',
+    'about.history.subtitle': 'Important steps we have taken over the years',
+    'about.history.year1995.title': 'Foundation',
+    'about.history.year1995.description': 'Monza Tekstil was founded in Istanbul',
+    'about.history.year2005.title': 'Expansion',
+    'about.history.year2005.description': 'Production capacity was expanded',
+    'about.history.year2024.title': 'Digital Transformation',
+    'about.history.year2024.description': 'E-commerce platform was launched',
+    
+    'catalog.allProducts': 'All Products',
+    'catalog.showingResults': 'Showing {current} of {total} products',
+    'catalog.noProductsFound': 'No products found',
+    'catalog.loading': 'Loading...',
+    'catalog.loadMore': 'Load More Products',
+    'catalog.noResults.title': 'No products found',
+    'catalog.noResults.message': 'Try adjusting your filters or search terms to find what you\'re looking for.',
+    'catalog.clearFilters': 'Clear All Filters',
+    
+    // Gallery & Misc
+    'gallery.noImages': 'No images available',
+    'notFound.title': 'Page Not Found',
+    'notFound.message': 'The page you\'re looking for doesn\'t exist or has been moved.',
+    'notFound.goHome': 'Go Home',
+    'notFound.goBack': 'Go Back',
+    'notFound.browseCatalog': 'Browse Catalog',
+    'notFound.helpText': 'Try checking the URL or use the navigation above to find what you\'re looking for.',
+    
+    // Common
+    'common.currency': '$',
+    'common.loading': 'Loading...',
+    'common.error': 'An error occurred',
+    'common.tryAgain': 'Try again',
+    'common.close': 'Close',
+    'common.open': 'Open',
+  }
+}
+
+const LanguageContext = createContext()
+
+export function LanguageProvider({ children }) {
+  const [language, setLanguage] = useState('tr')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('language')
+    if (stored && ['tr', 'en'].includes(stored)) {
+      setLanguage(stored)
+    }
+  }, [])
+
+  const updateLanguage = (lang) => {
+    setLanguage(lang)
+    localStorage.setItem('language', lang)
+  }
+
+  const t = (key, params = {}) => {
+    let text = translations[language][key] || key
+    
+    Object.entries(params).forEach(([paramKey, paramValue]) => {
+      text = text.replace(`{${paramKey}}`, String(paramValue))
+    })
+    
+    return text
+  }
+
+  return (
+    <LanguageContext.Provider value={{
+      language,
+      setLanguage: updateLanguage,
+      t
+    }}>
+      {children}
+    </LanguageContext.Provider>
+  )
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext)
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider')
+  }
+  return context
+}

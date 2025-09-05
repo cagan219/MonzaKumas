@@ -1,0 +1,149 @@
+[
+  {
+    "id": "1",
+    "slug": "luxury-silk-floral",
+    "name": "Luxury Silk Floral",
+    "description": "Premium quality silk fabric with elegant floral patterns. Perfect for evening wear and special occasions.",
+    "pricePerMeter": 45.99,
+    "originalPrice": 55.99,
+    "stockQty": 25,
+    "pattern": "Floral",
+    "colors": ["Red", "Pink", "Gold"],
+    "swatchType": "Silk",
+    "images": [
+      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "2", 
+    "slug": "cotton-geometric-print",
+    "name": "Cotton Geometric Print",
+    "description": "Modern geometric patterns on high-quality cotton fabric. Ideal for contemporary fashion and home decor.",
+    "pricePerMeter": 22.50,
+    "stockQty": 50,
+    "pattern": "Geometric",
+    "colors": ["Blue", "White", "Gray"],
+    "swatchType": "Cotton",
+    "images": [
+      "https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1582582621959-48d27397dc69?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "3",
+    "slug": "wool-solid-navy",
+    "name": "Premium Wool Solid Navy",
+    "description": "Rich navy blue wool fabric with exceptional texture and warmth. Perfect for tailoring and winter garments.",
+    "pricePerMeter": 65.00,
+    "stockQty": 15,
+    "pattern": "Solid",
+    "colors": ["Navy", "Blue"],
+    "swatchType": "Wool",
+    "images": [
+      "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "4",
+    "slug": "linen-striped-summer",
+    "name": "Linen Striped Summer",
+    "description": "Breathable linen fabric with classic stripes. Perfect for summer clothing and casual wear.",
+    "pricePerMeter": 28.75,
+    "stockQty": 35,
+    "pattern": "Striped",
+    "colors": ["White", "Blue", "Beige"],
+    "swatchType": "Linen",
+    "images": [
+      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "5",
+    "slug": "velvet-abstract-purple",
+    "name": "Velvet Abstract Purple",
+    "description": "Luxurious velvet with abstract patterns in rich purple tones. Ideal for upholstery and formal wear.",
+    "pricePerMeter": 85.00,
+    "stockQty": 8,
+    "pattern": "Abstract",
+    "colors": ["Purple", "Pink", "Violet"],
+    "swatchType": "Velvet",
+    "images": [
+      "https://images.unsplash.com/photo-1582582621959-48d27397dc69?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "6",
+    "slug": "polyester-blend-textured",
+    "name": "Polyester Blend Textured",
+    "description": "Durable polyester blend with interesting texture. Great for everyday wear and easy care.",
+    "pricePerMeter": 18.99,
+    "stockQty": 75,
+    "pattern": "Textured",
+    "colors": ["Gray", "Black", "Brown"],
+    "swatchType": "Blend",
+    "images": [
+      "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "7",
+    "slug": "silk-solid-ivory",
+    "name": "Pure Silk Solid Ivory",
+    "description": "Elegant ivory silk with smooth finish. Perfect for bridal wear and luxury garments.",
+    "pricePerMeter": 52.00,
+    "stockQty": 12,
+    "pattern": "Solid",
+    "colors": ["White", "Ivory", "Cream"],
+    "swatchType": "Silk",
+    "images": [
+      "https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "8",
+    "slug": "cotton-floral-vintage",
+    "name": "Cotton Floral Vintage",
+    "description": "Vintage-inspired floral print on soft cotton. Nostalgic charm meets modern quality.",
+    "pricePerMeter": 26.50,
+    "stockQty": 42,
+    "pattern": "Floral",
+    "colors": ["Pink", "Green", "Yellow", "White"],
+    "swatchType": "Cotton",
+    "images": [
+      "https://images.unsplash.com/photo-1582582621959-48d27397dc69?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "9",
+    "slug": "wool-geometric-black",
+    "name": "Wool Geometric Black",
+    "description": "Bold black wool with modern geometric patterns. Statement piece for sophisticated designs.",
+    "pricePerMeter": 58.99,
+    "stockQty": 0,
+    "pattern": "Geometric",
+    "colors": ["Black", "White", "Gray"],
+    "swatchType": "Wool",
+    "images": [
+      "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=500&h=500&fit=crop"
+    ]
+  },
+  {
+    "id": "10",
+    "slug": "linen-solid-natural",
+    "name": "Linen Solid Natural",
+    "description": "Natural linen in its purest form. Eco-friendly and versatile for any project.",
+    "pricePerMeter": 31.25,
+    "stockQty": 60,
+    "pattern": "Solid", 
+    "colors": ["Beige", "Natural", "Brown"],
+    "swatchType": "Linen",
+    "images": [
+      "https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=500&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop"
+    ]
+  }
+]

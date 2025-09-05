@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Fabric {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  nameTR        String
+  nameEN        String
+  pattern       String
+  swatchType    String
+  descriptionTR String?
+  descriptionEN String?
+  isVisible     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  variants      FabricVariant[]
+  
+  @@map("fabrics")
+}
+
+model FabricVariant {
+  id         String  @id @default(cuid())
+  fabricId   String
+  colorName  String
+  colorCode  String?
+  imageUrl   String?
+  lengthM    Float
+  pricePerM  Float
+  
+  fabric     Fabric     @relation(fields: [fabricId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  
+  @@map("fabric_variants")
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  status       OrderStatus @default(PENDING)
+  customerName String
+  email        String
+  phone        String
+  company      String?
+  address      String?
+  notes        String?
+  createdAt    DateTime    @default(now())
+  
+  items        OrderItem[]
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String @id @default(cuid())
+  orderId         String
+  fabricVariantId String
+  quantityM       Float
+  unitPriceM      Float
+  
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fabricVariant   FabricVariant @relation(fields: [fabricVariantId], references: [id])
+  
+  @@map("order_items")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  FULFILLED
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  name     String
+  
+  @@map("users")
+}
