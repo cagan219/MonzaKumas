@@ -146,10 +146,184 @@ function Footer() {
   )
 }
 
+// Product Modal Component
+function ProductModal({ product, isOpen, onClose }) {
+  if (!isOpen || !product) return null
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            onClick={onClose}
+          >
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <div className="absolute top-4 right-4 z-10">
+                <button
+                  onClick={onClose}
+                  className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 transition-colors"
+                >
+                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Product Image */}
+              <div className="aspect-[4/3] bg-gray-100 rounded-t-2xl overflow-hidden">
+                <img 
+                  src={product.images[0]} 
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Product Details */}
+              <div className="p-6">
+                {/* Product Name */}
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  {product.name}
+                </h2>
+
+                {/* Price */}
+                <div className="mb-6">
+                  <span className="text-3xl font-bold text-green-600">
+                    ${product.pricePerMeter}
+                  </span>
+                  <span className="text-gray-600 ml-2">per meter</span>
+                </div>
+
+                {/* Product Attributes Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* Pattern */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Pattern</h3>
+                    <p className="text-gray-700">{product.pattern}</p>
+                  </div>
+
+                  {/* Swatch Type */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Swatch Type</h3>
+                    <p className="text-gray-700">{product.swatchType}</p>
+                  </div>
+
+                  {/* Colors */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Available Colors</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {product.colors.map((color, index) => (
+                        <span 
+                          key={index}
+                          className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                        >
+                          {color}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Stock */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Stock Level</h3>
+                    <div className="flex items-center">
+                      <div className={`w-3 h-3 rounded-full mr-2 ${
+                        product.lengthMeters > 20 ? 'bg-green-500' : 
+                        product.lengthMeters > 0 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}></div>
+                      <span className={`font-semibold ${
+                        product.lengthMeters > 20 ? 'text-green-600' : 
+                        product.lengthMeters > 0 ? 'text-yellow-600' : 'text-red-600'
+                      }`}>
+                        {product.lengthMeters > 0 ? `${product.lengthMeters} meters available` : 'Out of Stock'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="mb-6">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-2">Description</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {product.pattern === 'Solid' ? 
+                      'Premium solid color fabric perfect for elegant designs. High-quality construction ensures durability and comfort.' :
+                    product.pattern === 'Designer' ? 
+                      'Exclusive designer pattern featuring unique artistic elements. Perfect for creating standout pieces with contemporary flair.' :
+                    product.pattern === 'Handwoven' ? 
+                      'Carefully handwoven fabric showcasing traditional craftsmanship. Each piece is unique with subtle variations that add character.' :
+                    product.pattern === 'Tweed' ? 
+                      'Classic tweed pattern with timeless appeal. Durable and warm, perfect for sophisticated garments with traditional styling.' :
+                    product.pattern === 'Striped' ? 
+                      'Clean striped design offering versatility in styling. Perfect for both formal and casual applications.' :
+                      'High-quality fabric with premium construction. Carefully selected materials ensure excellent drape and longevity.'
+                    }
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button 
+                    className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-colors ${
+                      product.lengthMeters > 0 
+                        ? 'bg-black text-white hover:bg-gray-800' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                    disabled={product.lengthMeters === 0}
+                  >
+                    {product.lengthMeters > 0 ? 'Request Quote' : 'Out of Stock'}
+                  </button>
+                  <button className="flex-1 py-3 px-6 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                    Contact Us
+                  </button>
+                </div>
+
+                {/* Additional Info */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Free samples available • Custom lengths available • Professional consultation</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  )
+}
+
 // Modern HomePage
 function HomePage() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openProductModal = (product) => {
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
+
+  const closeProductModal = () => {
+    setIsModalOpen(false)
+    setTimeout(() => setSelectedProduct(null), 300) // Wait for animation to complete
+  }
 
   useEffect(() => {
     // Simulate loading fabrics data
@@ -428,6 +602,7 @@ function HomePage() {
                 transition: { duration: 0.2 }
               }}
               className="group cursor-pointer"
+              onClick={() => openProductModal(product)}
             >
               <div className="aspect-[4/5] bg-gray-100 rounded-2xl overflow-hidden mb-4 group-hover:shadow-lg transition-shadow">
                 <motion.img 
@@ -444,7 +619,7 @@ function HomePage() {
                 </h3>
                 
                 {/* Price */}
-                <p className="text-coral-500 font-bold text-lg">
+                <p className="text-green-600 font-bold text-lg">
                   ${product.pricePerMeter}/meter
                 </p>
 
@@ -503,6 +678,13 @@ function HomePage() {
       </div>
 
       <Footer />
+      
+      {/* Product Modal */}
+      <ProductModal 
+        product={selectedProduct} 
+        isOpen={isModalOpen} 
+        onClose={closeProductModal} 
+      />
     </div>
   )
 }
@@ -516,6 +698,18 @@ function ProductsPage() {
   const [selectedColor, setSelectedColor] = useState('')
   const [inStockOnly, setInStockOnly] = useState(false)
   const [sortBy, setSortBy] = useState('newest')
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openProductModal = (product) => {
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
+
+  const closeProductModal = () => {
+    setIsModalOpen(false)
+    setTimeout(() => setSelectedProduct(null), 300)
+  }
 
   useEffect(() => {
     // Load all products
@@ -852,6 +1046,7 @@ function ProductsPage() {
                   transition: { duration: 0.2 }
                 }}
                 className="group cursor-pointer"
+                onClick={() => openProductModal(product)}
               >
                 <div className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
                   {/* Product Image */}
@@ -872,7 +1067,7 @@ function ProductsPage() {
                     </h3>
                     
                     {/* Price */}
-                    <p className="text-coral-500 font-bold text-lg">
+                    <p className="text-green-600 font-bold text-lg">
                       ${product.pricePerMeter}/meter
                     </p>
 
@@ -939,6 +1134,13 @@ function ProductsPage() {
       </div>
 
       <Footer />
+      
+      {/* Product Modal */}
+      <ProductModal 
+        product={selectedProduct} 
+        isOpen={isModalOpen} 
+        onClose={closeProductModal} 
+      />
     </div>
   )
 }
@@ -952,6 +1154,7 @@ function AboutPage() {
             <h1 className="text-2xl font-bold text-gray-900">Monza Tekstil</h1>
             <nav className="flex space-x-8">
               <a href="/" className="text-gray-600 hover:text-gray-900">Home</a>
+              <a href="/products" className="text-gray-600 hover:text-gray-900">All Products</a>
               <a href="/catalog" className="text-gray-600 hover:text-gray-900">Catalog</a>
               <a href="/about" className="text-gray-600 hover:text-gray-900 font-semibold">About</a>
               <a href="/contact" className="text-gray-600 hover:text-gray-900">Contact</a>
@@ -992,6 +1195,48 @@ function AboutPage() {
 }
 
 function ContactPage() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState('')
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    // Validation
+    if (!formData.fullName || (!formData.email && !formData.phone) || !formData.subject || !formData.message) {
+      setSubmitStatus('Please fill in all required fields.')
+      return
+    }
+
+    setIsSubmitting(true)
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setSubmitStatus('Message sent successfully! We will respond within 24 hours.')
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      })
+    }, 2000)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -1000,6 +1245,7 @@ function ContactPage() {
             <h1 className="text-2xl font-bold text-gray-900">Monza Tekstil</h1>
             <nav className="flex space-x-8">
               <a href="/" className="text-gray-600 hover:text-gray-900">Home</a>
+              <a href="/products" className="text-gray-600 hover:text-gray-900">All Products</a>
               <a href="/catalog" className="text-gray-600 hover:text-gray-900">Catalog</a>
               <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
               <a href="/contact" className="text-gray-600 hover:text-gray-900 font-semibold">Contact</a>
@@ -1010,15 +1256,574 @@ function ContactPage() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">Contact Us</h2>
-        <div className="bg-white p-8 rounded-lg shadow-sm">
-          <p className="text-lg text-gray-600 mb-6">
-            Get in touch with us for all your textile needs.
-          </p>
-          <div className="space-y-4">
-            <p><strong>Phone:</strong> +90 532 123 4567</p>
-            <p><strong>Email:</strong> info@monzatekstil.com</p>
-            <p><strong>Address:</strong> Istanbul, Turkey</p>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <div className="bg-white p-8 rounded-lg shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">Get in Touch</h3>
+              <p className="text-gray-600 mb-8">
+                Get in touch with us for all your textile needs. We respond within 24 hours.
+              </p>
+              
+              <div className="space-y-6">
+                {/* Phone */}
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <a href="tel:+905327473215" className="text-lg font-semibold text-gray-900 hover:text-green-600 transition-colors">
+                      +90 532 747 32 15
+                    </a>
+                  </div>
+                </div>
+
+                {/* WhatsApp */}
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">WhatsApp</p>
+                    <a href="https://wa.me/905327473215" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-gray-900 hover:text-green-600 transition-colors">
+                      +90 532 747 32 15
+                    </a>
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <a href="mailto:monzakumas@gmail.com" className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                      monzakumas@gmail.com
+                    </a>
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Address</p>
+                    <a href="https://maps.app.goo.gl/raxiq7xe4G34wi4x6" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-gray-900 hover:text-red-600 transition-colors">
+                      Akşemsettin, Elmas Sk. No:15<br />
+                      34070 Eyüpsultan/İstanbul, Türkiye
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Hours */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Business Hours</h4>
+                <div className="space-y-2 text-gray-600">
+                  <div className="flex justify-between">
+                    <span>Monday - Friday:</span>
+                    <span>9:00 AM - 6:00 PM</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Saturday:</span>
+                    <span>9:00 AM - 3:00 PM</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Sunday:</span>
+                    <span>Closed</span>
+                  </div>
+                </div>
+                <p className="text-sm text-green-600 font-medium mt-4">
+                  ✓ We respond within 24 hours
+                </p>
+              </div>
+            </div>
           </div>
+
+          {/* Contact Form */}
+          <div className="bg-white p-8 rounded-lg shadow-sm">
+            <h3 className="text-xl font-semibold text-gray-900 mb-6">Send us a Message</h3>
+            
+            {submitStatus && (
+              <div className={`mb-6 p-4 rounded-lg ${
+                submitStatus.includes('successfully') 
+                  ? 'bg-green-50 text-green-800 border border-green-200' 
+                  : 'bg-red-50 text-red-800 border border-red-200'
+              }`}>
+                {submitStatus}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Full Name */}
+              <div>
+                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="Your full name"
+                />
+              </div>
+
+              {/* Email and Phone */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                    placeholder="+90 xxx xxx xx xx"
+                  />
+                </div>
+              </div>
+              <p className="text-sm text-gray-500">* At least one contact method (email or phone) is required</p>
+
+              {/* Subject */}
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  Subject *
+                </label>
+                <select
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                >
+                  <option value="">Select a subject</option>
+                  <option value="product-inquiry">Product Inquiry</option>
+                  <option value="custom-order">Custom Order</option>
+                  <option value="bulk-order">Bulk Order</option>
+                  <option value="pricing">Pricing Information</option>
+                  <option value="technical-support">Technical Support</option>
+                  <option value="partnership">Partnership</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              {/* Message */}
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  rows={5}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none"
+                  placeholder="Tell us about your requirements..."
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${
+                  isSubmitting
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-500'
+                } text-white`}
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CatalogPage() {
+  const [catalogRequest, setCatalogRequest] = useState({
+    fullName: '',
+    company: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    country: '',
+    interests: [],
+    notes: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState('')
+
+  const handleInputChange = (e) => {
+    setCatalogRequest({
+      ...catalogRequest,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleInterestChange = (interest) => {
+    setCatalogRequest({
+      ...catalogRequest,
+      interests: catalogRequest.interests.includes(interest)
+        ? catalogRequest.interests.filter(i => i !== interest)
+        : [...catalogRequest.interests, interest]
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    // Validation
+    if (!catalogRequest.fullName || !catalogRequest.email || !catalogRequest.address || !catalogRequest.city || !catalogRequest.country) {
+      setSubmitStatus('Please fill in all required fields.')
+      return
+    }
+
+    setIsSubmitting(true)
+    
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setSubmitStatus('Catalog request submitted successfully! We will send your physical catalog within 5-7 business days.')
+      setCatalogRequest({
+        fullName: '',
+        company: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        country: '',
+        interests: [],
+        notes: ''
+      })
+    }, 2000)
+  }
+
+  const catalogCategories = [
+    { id: 'premium-wool', name: 'Premium Wool', description: 'High-quality wool fabrics for luxury garments' },
+    { id: 'cotton-blends', name: 'Cotton Blends', description: 'Comfortable and versatile cotton fabric blends' },
+    { id: 'silk-collection', name: 'Silk Collection', description: 'Elegant silk fabrics for special occasions' },
+    { id: 'technical-fabrics', name: 'Technical Fabrics', description: 'Performance fabrics for industrial applications' },
+    { id: 'seasonal', name: 'Seasonal Collection', description: 'Limited edition seasonal fabric designs' },
+    { id: 'custom', name: 'Custom Solutions', description: 'Bespoke fabric development and customization' }
+  ]
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900">Monza Tekstil</h1>
+            <nav className="flex space-x-8">
+              <a href="/" className="text-gray-600 hover:text-gray-900">Home</a>
+              <a href="/products" className="text-gray-600 hover:text-gray-900">All Products</a>
+              <a href="/catalog" className="text-gray-600 hover:text-gray-900 font-semibold">Catalog</a>
+              <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
+              <a href="/contact" className="text-gray-600 hover:text-gray-900">Contact</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Fabric Catalog</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Discover our complete collection of premium fabrics and textiles. Request a physical catalog to explore our full range with actual fabric samples.
+          </p>
+        </div>
+
+        {/* Catalog Overview */}
+        <div className="mb-16">
+          <div className="bg-white rounded-xl shadow-sm p-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Physical Catalog</h3>
+                <p className="text-gray-600 mb-6">
+                  Our comprehensive physical catalog includes actual fabric samples, detailed specifications, 
+                  pricing information, and application guides. Perfect for designers, manufacturers, and businesses 
+                  who need to feel and examine fabric quality.
+                </p>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center">
+                    <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Over 200 fabric samples
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Detailed specifications and care instructions
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Professional pricing and minimum order quantities
+                  </div>
+                  <div className="flex items-center">
+                    <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Free shipping worldwide
+                  </div>
+                </div>
+              </div>
+              <div className="relative">
+                <img 
+                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=600&fit=crop" 
+                  alt="Physical catalog preview" 
+                  className="w-full rounded-lg shadow-lg"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Catalog Categories */}
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Catalog Sections</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {catalogCategories.map((category) => (
+              <div key={category.id} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h4>
+                <p className="text-gray-600 text-sm">{category.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Request Form */}
+        <div className="bg-white p-8 rounded-xl shadow-sm">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">Request Physical Catalog</h3>
+          <p className="text-gray-600 mb-8">
+            Fill out the form below to receive our complete physical catalog with fabric samples. 
+            Delivery typically takes 5-7 business days.
+          </p>
+          
+          {submitStatus && (
+            <div className={`mb-6 p-4 rounded-lg ${
+              submitStatus.includes('successfully') 
+                ? 'bg-green-50 text-green-800 border border-green-200' 
+                : 'bg-red-50 text-red-800 border border-red-200'
+            }`}>
+              {submitStatus}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Personal Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={catalogRequest.fullName}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="Your full name"
+                />
+              </div>
+              <div>
+                <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                  Company
+                </label>
+                <input
+                  type="text"
+                  id="company"
+                  name="company"
+                  value={catalogRequest.company}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="Company name (optional)"
+                />
+              </div>
+            </div>
+
+            {/* Contact Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={catalogRequest.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={catalogRequest.phone}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="+90 xxx xxx xx xx"
+                />
+              </div>
+            </div>
+
+            {/* Address */}
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                Address *
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={catalogRequest.address}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                placeholder="Street address"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+                  City *
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={catalogRequest.city}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="City"
+                />
+              </div>
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                  Country *
+                </label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={catalogRequest.country}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  placeholder="Country"
+                />
+              </div>
+            </div>
+
+            {/* Interests */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Areas of Interest (Select all that apply)
+              </label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {catalogCategories.map((category) => (
+                  <label key={category.id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={catalogRequest.interests.includes(category.id)}
+                      onChange={() => handleInterestChange(category.id)}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">{category.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Additional Notes */}
+            <div>
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Notes
+              </label>
+              <textarea
+                id="notes"
+                name="notes"
+                value={catalogRequest.notes}
+                onChange={handleInputChange}
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none"
+                placeholder="Any specific requirements or questions about the catalog..."
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${
+                isSubmitting
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-500'
+              } text-white`}
+            >
+              {isSubmitting ? 'Submitting Request...' : 'Request Catalog'}
+            </button>
+            
+            <p className="text-sm text-gray-500 text-center">
+              * Free worldwide shipping • 5-7 business days delivery • No commitment required
+            </p>
+          </form>
         </div>
       </div>
     </div>
@@ -1030,7 +1835,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/products" element={<ProductsPage />} />
-      <Route path="/catalog" element={<ProductsPage />} />
+      <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />
     </Routes>
