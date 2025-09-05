@@ -98,3 +98,17 @@
 .bg-coral-500 {
   background-color: #FF6B6B;
 }
+
+.bg-coral-600 {
+  background-color: #FF5252;
+}
+
+.focus\:ring-coral-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(255 107 107 / var(--tw-ring-opacity));
+}
+
+.focus\:border-coral-500:focus {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 107 107 / var(--tw-border-opacity));
+}

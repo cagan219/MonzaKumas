@@ -80,16 +80,21 @@ function Header() {
                   </button>
                 </div>
                 <nav className="space-y-4">
-                  {['All Products', 'Catalog', 'About Us', 'Contact'].map((item, index) => (
+                  {[
+                    { name: 'All Products', path: '/products' },
+                    { name: 'Catalog', path: '/catalog' },
+                    { name: 'About Us', path: '/about' },
+                    { name: 'Contact', path: '/contact' }
+                  ].map((item, index) => (
                     <motion.a 
-                      key={item}
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                      key={item.name}
+                      href={item.path}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                       className="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
                     >
-                      {item}
+                      {item.name}
                     </motion.a>
                   ))}
                 </nav>
@@ -433,13 +438,54 @@ function HomePage() {
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <div className="space-y-2">
-                <h3 className="font-medium text-gray-900 text-sm leading-tight">
+              <div className="space-y-3">
+                <h3 className="font-semibold text-gray-900 text-sm leading-tight">
                   {product.name}
                 </h3>
-                <p className="text-coral-500 font-semibold">${product.pricePerMeter}</p>
-                <div className="text-xs text-gray-500">
-                  Stock: {product.lengthMeters}m
+                
+                {/* Price */}
+                <p className="text-coral-500 font-bold text-lg">
+                  ${product.pricePerMeter}/meter
+                </p>
+
+                {/* Pattern */}
+                <div className="flex items-center text-sm text-gray-600">
+                  <span className="font-medium">Pattern:</span>
+                  <span className="ml-2">{product.pattern}</span>
+                </div>
+
+                {/* Colors */}
+                <div>
+                  <span className="text-sm font-medium text-gray-600">Colors:</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {product.colors.map((color, index) => (
+                      <span 
+                        key={index}
+                        className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                      >
+                        {color}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stock Level */}
+                <div className="flex items-center justify-between">
+                  <div className="text-sm">
+                    <span className="font-medium text-gray-600">Stock:</span>
+                    <span className={`ml-2 font-semibold ${
+                      product.lengthMeters > 20 ? 'text-green-600' : 
+                      product.lengthMeters > 0 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {product.lengthMeters > 0 ? `${product.lengthMeters}m` : 'Out of Stock'}
+                    </span>
+                  </div>
+                  
+                  {/* Stock Status Indicator */}
+                  <div className={`w-3 h-3 rounded-full ${
+                    product.lengthMeters > 20 ? 'bg-green-500' : 
+                    product.lengthMeters > 0 ? 'bg-yellow-500' : 'bg-red-500'
+                  }`}></div>
                 </div>
               </div>
             </motion.div>
@@ -461,36 +507,438 @@ function HomePage() {
   )
 }
 
-function CatalogPage() {
+function ProductsPage() {
+  const [products, setProducts] = useState([])
+  const [filteredProducts, setFilteredProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedPattern, setSelectedPattern] = useState('')
+  const [selectedColor, setSelectedColor] = useState('')
+  const [inStockOnly, setInStockOnly] = useState(false)
+  const [sortBy, setSortBy] = useState('newest')
+
+  useEffect(() => {
+    // Load all products
+    const loadProducts = async () => {
+      try {
+        const mockProducts = [
+          {
+            id: "fab-001",
+            slug: "premium-wool-navy", 
+            name: "A Young Woman in Colorful Jacket",
+            images: ["https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=400&h=500&fit=crop"],
+            pattern: "Solid",
+            colors: ["Pink", "Green", "Yellow"],
+            swatchType: "Super 120s",
+            lengthMeters: 50,
+            pricePerMeter: 108,
+            createdAt: "2024-01-01T00:00:00.000Z"
+          },
+          {
+            id: "fab-002",
+            slug: "modern-casual-jacket",
+            name: "Modern Casual Jacket", 
+            images: ["https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=500&fit=crop"],
+            pattern: "Contemporary",
+            colors: ["Orange", "Blue"],
+            swatchType: "Super 130s",
+            lengthMeters: 35,
+            pricePerMeter: 95,
+            createdAt: "2024-01-02T00:00:00.000Z"
+          },
+          {
+            id: "fab-003", 
+            slug: "premium-fabric-collection",
+            name: "Premium Fabric Collection",
+            images: ["https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=500&fit=crop"],
+            pattern: "Textured",
+            colors: ["Pink", "White"],
+            swatchType: "Silk Mix",
+            lengthMeters: 25,
+            pricePerMeter: 120,
+            createdAt: "2024-01-03T00:00:00.000Z"
+          },
+          {
+            id: "fab-004",
+            slug: "elegant-textile-design",
+            name: "Elegant Textile Design",
+            images: ["https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop"],
+            pattern: "Classic",
+            colors: ["Beige", "Cream"],
+            swatchType: "Super 110s", 
+            lengthMeters: 42,
+            pricePerMeter: 85,
+            createdAt: "2024-01-04T00:00:00.000Z"
+          },
+          {
+            id: "fab-005",
+            slug: "contemporary-style",
+            name: "Contemporary Style",
+            images: ["https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop"],
+            pattern: "Modern",
+            colors: ["Black", "Gray"],
+            swatchType: "Super 120s",
+            lengthMeters: 38,
+            pricePerMeter: 110,
+            createdAt: "2024-01-05T00:00:00.000Z"
+          },
+          {
+            id: "fab-006",
+            slug: "luxury-fabric-series",
+            name: "Luxury Fabric Series",
+            images: ["https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400&h=500&fit=crop"],
+            pattern: "Premium",
+            colors: ["Blue", "White"],
+            swatchType: "Super 140s",
+            lengthMeters: 30,
+            pricePerMeter: 135,
+            createdAt: "2024-01-06T00:00:00.000Z"
+          },
+          {
+            id: "fab-007",
+            slug: "artisan-collection", 
+            name: "Artisan Collection",
+            images: ["https://images.unsplash.com/photo-1566479179817-0a7fbfce43da?w=400&h=500&fit=crop"],
+            pattern: "Handwoven",
+            colors: ["Green", "Brown"],
+            swatchType: "Artisan",
+            lengthMeters: 20,
+            pricePerMeter: 98,
+            createdAt: "2024-01-07T00:00:00.000Z"
+          },
+          {
+            id: "fab-008",
+            slug: "designer-patterns",
+            name: "Designer Patterns",
+            images: ["https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=500&fit=crop"],
+            pattern: "Designer",
+            colors: ["Multi", "Colorful"], 
+            swatchType: "Designer Mix",
+            lengthMeters: 45,
+            pricePerMeter: 115,
+            createdAt: "2024-01-08T00:00:00.000Z"
+          },
+          {
+            id: "fab-009",
+            slug: "vintage-tweed",
+            name: "Vintage Tweed Pattern",
+            images: ["https://images.unsplash.com/photo-1489370321024-e0834ad8b2e2?w=400&h=500&fit=crop"],
+            pattern: "Tweed",
+            colors: ["Brown", "Tan"],
+            swatchType: "Super 100s",
+            lengthMeters: 0,
+            pricePerMeter: 88,
+            createdAt: "2024-01-09T00:00:00.000Z"
+          },
+          {
+            id: "fab-010",
+            slug: "silk-stripe",
+            name: "Silk Stripe Collection",
+            images: ["https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop"],
+            pattern: "Striped",
+            colors: ["Navy", "Gold"],
+            swatchType: "Pure Silk",
+            lengthMeters: 15,
+            pricePerMeter: 145,
+            createdAt: "2024-01-10T00:00:00.000Z"
+          }
+        ]
+        
+        setProducts(mockProducts)
+        setFilteredProducts(mockProducts)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error loading products:', error)
+        setLoading(false)
+      }
+    }
+
+    loadProducts()
+  }, [])
+
+  // Filter and search logic
+  useEffect(() => {
+    let filtered = products.filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          product.pattern.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          product.colors.some(color => color.toLowerCase().includes(searchTerm.toLowerCase()))
+      
+      const matchesPattern = !selectedPattern || product.pattern === selectedPattern
+      const matchesColor = !selectedColor || product.colors.some(color => color.toLowerCase().includes(selectedColor.toLowerCase()))
+      const matchesStock = !inStockOnly || product.lengthMeters > 0
+
+      return matchesSearch && matchesPattern && matchesColor && matchesStock
+    })
+
+    // Sort products
+    if (sortBy === 'newest') {
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    } else if (sortBy === 'price-low') {
+      filtered.sort((a, b) => a.pricePerMeter - b.pricePerMeter)
+    } else if (sortBy === 'price-high') {
+      filtered.sort((a, b) => b.pricePerMeter - a.pricePerMeter)
+    } else if (sortBy === 'stock') {
+      filtered.sort((a, b) => b.lengthMeters - a.lengthMeters)
+    }
+
+    setFilteredProducts(filtered)
+  }, [products, searchTerm, selectedPattern, selectedColor, inStockOnly, sortBy])
+
+  // Get unique patterns and colors for filter options
+  const uniquePatterns = [...new Set(products.map(p => p.pattern))]
+  const uniqueColors = [...new Set(products.flatMap(p => p.colors))]
+
+  const clearFilters = () => {
+    setSearchTerm('')
+    setSelectedPattern('')
+    setSelectedColor('')
+    setInStockOnly(false)
+    setSortBy('newest')
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Monza Tekstil</h1>
-            <nav className="flex space-x-8">
-              <a href="/" className="text-gray-600 hover:text-gray-900">Home</a>
-              <a href="/catalog" className="text-gray-600 hover:text-gray-900 font-semibold">Catalog</a>
-              <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
-              <a href="/contact" className="text-gray-600 hover:text-gray-900">Contact</a>
-            </nav>
+    <div className="min-h-screen bg-white">
+      <Header />
+      
+      {/* Search and Filters Section */}
+      <div className="bg-gray-50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">All Products</h1>
+            <p className="text-gray-600">Browse our complete collection of premium fabrics</p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-6">
+            <div className="relative max-w-md">
+              <input
+                type="text"
+                placeholder="Search products, patterns, colors..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-coral-500"
+              />
+              <svg className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+            {/* Pattern Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pattern</label>
+              <select
+                value={selectedPattern}
+                onChange={(e) => setSelectedPattern(e.target.value)}
+                className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500"
+              >
+                <option value="">All Patterns</option>
+                {uniquePatterns.map(pattern => (
+                  <option key={pattern} value={pattern}>{pattern}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Color Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+              <select
+                value={selectedColor}
+                onChange={(e) => setSelectedColor(e.target.value)}
+                className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500"
+              >
+                <option value="">All Colors</option>
+                {uniqueColors.map(color => (
+                  <option key={color} value={color}>{color}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Stock Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+              <div className="flex items-center py-3">
+                <input
+                  type="checkbox"
+                  checked={inStockOnly}
+                  onChange={(e) => setInStockOnly(e.target.checked)}
+                  className="h-4 w-4 text-coral-500 focus:ring-coral-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 text-sm text-gray-700">In stock only</label>
+              </div>
+            </div>
+
+            {/* Sort */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Sort by</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500"
+              >
+                <option value="newest">Newest</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="stock">Stock Level</option>
+              </select>
+            </div>
+
+            {/* Clear Filters */}
+            <div className="flex items-end">
+              <button
+                onClick={clearFilters}
+                className="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="flex justify-between items-center mb-6">
+            <p className="text-gray-600">
+              {filteredProducts.length > 0 
+                ? `Showing ${filteredProducts.length} of ${products.length} products` 
+                : 'No products found'}
+            </p>
           </div>
         </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">Fabric Catalog</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {Array.from({ length: 8 }, (_, i) => (
-            <div key={i} className="bg-white p-4 rounded-lg shadow-sm">
-              <div className="h-48 bg-gray-200 rounded-md mb-4"></div>
-              <h3 className="text-lg font-semibold mb-2">Fabric {i + 1}</h3>
-              <p className="text-gray-600 mb-2">Premium quality fabric</p>
-              <p className="text-lg font-bold text-blue-600">${(Math.random() * 100 + 50).toFixed(0)}/meter</p>
-            </div>
-          ))}
-        </div>
       </div>
+
+      {/* Products Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="bg-white border border-gray-200 rounded-2xl p-4 animate-pulse">
+                <div className="bg-gray-200 h-64 rounded-xl mb-4"></div>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1,
+                  delayChildren: 0.1,
+                }
+              }
+            }}
+          >
+            {filteredProducts.map((product, index) => (
+              <motion.div 
+                key={product.id}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { duration: 0.3, ease: "easeOut" }
+                  }
+                }}
+                whileHover={{ 
+                  y: -5,
+                  transition: { duration: 0.2 }
+                }}
+                className="group cursor-pointer"
+              >
+                <div className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-lg transition-shadow">
+                  {/* Product Image */}
+                  <div className="aspect-[4/5] bg-gray-100 rounded-xl overflow-hidden mb-4">
+                    <motion.img 
+                      src={product.images[0]} 
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-gray-900 text-sm leading-tight">
+                      {product.name}
+                    </h3>
+                    
+                    {/* Price */}
+                    <p className="text-coral-500 font-bold text-lg">
+                      ${product.pricePerMeter}/meter
+                    </p>
+
+                    {/* Pattern */}
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium">Pattern:</span>
+                      <span className="ml-2">{product.pattern}</span>
+                    </div>
+
+                    {/* Colors */}
+                    <div>
+                      <span className="text-sm font-medium text-gray-600">Colors:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {product.colors.map((color, index) => (
+                          <span 
+                            key={index}
+                            className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                          >
+                            {color}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Stock Level */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm">
+                        <span className="font-medium text-gray-600">Stock:</span>
+                        <span className={`ml-2 font-semibold ${
+                          product.lengthMeters > 20 ? 'text-green-600' : 
+                          product.lengthMeters > 0 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {product.lengthMeters > 0 ? `${product.lengthMeters}m` : 'Out of Stock'}
+                        </span>
+                      </div>
+                      
+                      {/* Stock Status Indicator */}
+                      <div className={`w-3 h-3 rounded-full ${
+                        product.lengthMeters > 20 ? 'bg-green-500' : 
+                        product.lengthMeters > 0 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}></div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className="text-center py-20">
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              No products found
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Try adjusting your search or filter criteria.
+            </p>
+            <button 
+              onClick={clearFilters}
+              className="px-6 py-3 bg-coral-500 text-white rounded-lg hover:bg-coral-600 transition-colors"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      <Footer />
     </div>
   )
 }
@@ -581,7 +1029,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/catalog" element={<CatalogPage />} />
+      <Route path="/products" element={<ProductsPage />} />
+      <Route path="/catalog" element={<ProductsPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />
     </Routes>
