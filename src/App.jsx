@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { InteractiveHoverButton } from './components/ui/interactive-button'
 // import { Flag } from 'react-flag-kit'
 
 // Temporary flag component as fallback
@@ -912,17 +913,19 @@ function HomePage() {
             >
               {t('home.hero.subtitle')}
             </motion.p>
-            <motion.a 
-              href="/products"
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-block bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-colors"
             >
-              {t('home.hero.cta')}
-            </motion.a>
+              <InteractiveHoverButton
+                text={t('home.hero.cta')}
+                onClick={() => window.location.href = '/products'}
+                className="!w-auto !min-w-[200px] !px-8 !py-4 !text-lg shadow-2xl"
+              />
+            </motion.div>
           </div>
         </div>
       </div>
@@ -1092,12 +1095,11 @@ function HomePage() {
         </motion.div>
         
         <div className="text-center mt-12">
-          <a 
-            href="/products" 
-            className="inline-block border border-gray-300 px-8 py-3 rounded-full hover:bg-gray-50 transition-colors"
-          >
-            See all
-          </a>
+          <InteractiveHoverButton
+            text={t('home.seeAll')}
+            onClick={() => window.location.href = '/products'}
+            className="w-20 px-1 py-1 text-base shadow-lg whitespace-nowrap mx-auto"
+          />
         </div>
       </div>
 

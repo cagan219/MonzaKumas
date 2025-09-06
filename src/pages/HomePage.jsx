@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLanguage } from '../components/LanguageContext'
 import Hero from '../components/Hero'
 import ProductCard from '../components/ProductCard'
 import { Button } from '../components/ui/button'
+import { InteractiveHoverButton } from '../components/ui/interactive-button'
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -35,6 +36,7 @@ const itemVariants = {
 
 export default function HomePage() {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [featuredFabrics, setFeaturedFabrics] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -164,11 +166,11 @@ export default function HomePage() {
           transition={{ delay: 0.6 }}
           className="text-center"
         >
-          <Link to="/catalog">
-            <Button size="lg" className="px-8">
-              View All Products
-            </Button>
-          </Link>
+          <InteractiveHoverButton
+            text="View All Products"
+            onClick={() => navigate('/catalog')}
+            className="!w-auto !min-w-[200px] !px-8 !py-4 !text-lg shadow-lg"
+          />
         </motion.div>
       </div>
     </motion.div>

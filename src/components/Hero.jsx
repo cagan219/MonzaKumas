@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from './LanguageContext'
 import { Button } from './ui/button'
+import { InteractiveHoverButton } from './ui/interactive-button'
 import { ArrowRight, Sparkles } from 'lucide-react'
 
 export default function Hero() {
@@ -143,14 +144,11 @@ export default function Hero() {
             transition={{ delay: 0.7, duration: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Button
+            <InteractiveHoverButton
+              text={t('hero.cta.primary')}
               onClick={handleCTAClick}
-              size="lg"
-              className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-slate-800 via-blue-900 to-black hover:from-slate-700 hover:via-blue-800 hover:to-slate-900 text-white transform transition-all duration-200 hover:scale-105 shadow-2xl hover:shadow-blue-500/25 border border-slate-600/50"
-            >
-{t('hero.cta.primary')}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+              className="!w-auto !min-w-[200px] !px-8 !py-4 !text-lg shadow-2xl border-slate-600/50"
+            />
             
             <Button
               variant="outline"
