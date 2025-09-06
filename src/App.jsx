@@ -1,10 +1,377 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+// import { Flag } from 'react-flag-kit'
+
+// Temporary flag component as fallback
+const Flag = ({ country, size, className }) => (
+  <div className={`bg-gray-300 ${className}`} style={{ width: size, height: size * 0.75 }}>
+    {country === 'TR' ? '🇹🇷' : '🇬🇧'}
+  </div>
+)
+
+// Language Context
+const LanguageContext = createContext()
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext)
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider')
+  }
+  return context
+}
+
+// Translations
+const translations = {
+  tr: {
+    // Header
+    'header.search': 'Ara',
+    'header.cart': 'Sepet',
+    'header.menu': 'Menü',
+    
+    // Navigation
+    'nav.home': 'Ana Sayfa',
+    'nav.allProducts': 'Tüm Ürünler',
+    'nav.catalog': 'Katalog',
+    'nav.about': 'Hakkımızda',
+    'nav.contact': 'İletişim',
+    
+    // Home Page
+    'home.hero.title': 'Premium Kumaş ve Tekstil Koleksiyonu',
+    'home.hero.subtitle': 'Yüksek kaliteli kumaşları keşfedin ve işletmenizin ihtiyaçlarına göre özelleştirilmiş çözümler alın',
+    'home.hero.cta': 'Koleksiyonu Keşfet',
+    'home.collection.title': 'Yeni Koleksiyon',
+    'home.collection.subtitle': 'En son kumaş trendlerini ve yeniliklerini keşfedin',
+    'home.fabrics.title': 'Premium Kumaşlar',
+    'home.fabrics.subtitle': 'Özenle seçilmiş kumaş koleksiyonumuzu inceleyin',
+    'home.seeAll': 'Tümünü Gör',
+    'home.pattern': 'Desen',
+    'home.colors': 'Renkler',
+    'home.stock': 'Stok',
+    'home.swatchType': 'Kumaş Tipi',
+    'home.inStock': 'Stokta',
+    'home.outOfStock': 'Stokta Yok',
+    'home.meters': 'metre',
+    
+    // Product Modal
+    'modal.getQuote': 'Fiyat Teklifi Al',
+    'modal.contactUs': 'İletişime Geçin',
+    'modal.freesamples': 'Ücretsiz numuneler mevcut • Özel uzunluklar mevcut • Profesyonel danışmanlık',
+    'modal.pricePerMeter': 'Metre başına fiyat',
+    'modal.description.solid': 'Bu premium kumaş, zarif tasarımı ve üstün kalitesiyle öne çıkıyor. Modern işlemler kullanılarak üretilen bu kumaş, hem konfor hem de şıklık arayanlar için mükemmel bir seçim.',
+    'modal.description.contemporary': 'Çağdaş tasarımlar için özel olarak geliştirilmiş bu kumaş serisi, modern yaşam tarzına uygun özellikleriyle dikkat çekiyor. Yüksek kaliteli lifler ve yenilikçi dokuma tekniklerinin bir araya gelmesiyle oluşmuştur.',
+    'modal.description.textured': 'Dokulu yüzeyi ve benzersiz hissi ile bu premium kumaş, özel projeleriniz için ideal bir seçimdir. El işçiliği detayları ve kaliteli malzemeler kullanılarak üretilmiştir.',
+    'modal.description.classic': 'Klasik zarafeti modern kaliteyle buluşturan bu kumaş serisi, zamansız tasarımlar için mükemmeldir. Uzun yıllar boyunca güzelliğini koruyacak şekilde özenle üretilmiştir.',
+    
+    // Products Page
+    'products.title': 'Tüm Ürünler',
+    'products.subtitle': 'Premium kumaş koleksiyonumuzu keşfedin',
+    'products.search': 'Ürün ara...',
+    'products.allPatterns': 'Tüm Desenler',
+    'products.allColors': 'Tüm Renkler',
+    'products.inStockOnly': 'Sadece Stokta Olanlar',
+    'products.sortBy': 'Sırala',
+    'products.newest': 'En Yeni',
+    'products.priceHigh': 'Fiyat (Yüksek-Düşük)',
+    'products.priceLow': 'Fiyat (Düşük-Yüksek)',
+    'products.name': 'İsim',
+    'products.noResults': 'Ürün bulunamadı',
+    'products.noResultsDesc': 'Arama veya filtre kriterlerinizi ayarlamayı deneyin.',
+    'products.clearFilters': 'Tüm Filtreleri Temizle',
+    'products.showing': '{count} ürün gösteriliyor',
+    
+    // Catalog Page
+    'catalog.title': 'Kumaş Kataloğu',
+    'catalog.subtitle': 'Tüm premium kumaş ve tekstil koleksiyonumuzu keşfedin. Gerçek kumaş numuneleri ile tam koleksiyonumuzu incelemek için fiziksel katalog talep edin.',
+    'catalog.physicalTitle': 'Fiziksel Katalog',
+    'catalog.physicalDesc': 'Kapsamlı fiziksel kataloğumuz gerçek kumaş numuneleri, detaylı özellikler, fiyat bilgileri ve uygulama kılavuzları içerir. Kumaş kalitesini hissetmek ve incelemek isteyen tasarımcılar, üreticiler ve işletmeler için mükemmeldir.',
+    'catalog.features.samples': '200+ kumaş numunesi',
+    'catalog.features.specs': 'Detaylı özellikler ve bakım talimatları',
+    'catalog.features.pricing': 'Profesyonel fiyatlandırma ve minimum sipariş miktarları',
+    'catalog.features.shipping': 'Dünya geneline ücretsiz kargo',
+    'catalog.sectionsTitle': 'Katalog Bölümleri',
+    'catalog.premiumWool': 'Premium Yün',
+    'catalog.premiumWoolDesc': 'Lüks giysiler için yüksek kaliteli yün kumaşlar',
+    'catalog.cottonBlends': 'Pamuk Karışımları',
+    'catalog.cottonBlendsDesc': 'Rahat ve çok yönlü pamuk kumaş karışımları',
+    'catalog.silkCollection': 'İpek Koleksiyonu',
+    'catalog.silkCollectionDesc': 'Özel durumlar için zarif ipek kumaşlar',
+    'catalog.technicalFabrics': 'Teknik Kumaşlar',
+    'catalog.technicalFabricsDesc': 'Endüstriyel uygulamalar için performans kumaşları',
+    'catalog.seasonal': 'Sezonluk Koleksiyon',
+    'catalog.seasonalDesc': 'Sınırlı sayıda sezonluk kumaş tasarımları',
+    'catalog.custom': 'Özel Çözümler',
+    'catalog.customDesc': 'Özel kumaş geliştirme ve özelleştirme',
+    'catalog.requestTitle': 'Fiziksel Katalog Talep Et',
+    'catalog.requestDesc': 'Kumaş numuneleri ile birlikte eksiksiz fiziksel kataloğumuzu almak için aşağıdaki formu doldurun. Teslimat genellikle 5-7 iş günü sürer.',
+    'catalog.form.fullName': 'Ad Soyad',
+    'catalog.form.company': 'Şirket',
+    'catalog.form.email': 'E-posta',
+    'catalog.form.phone': 'Telefon',
+    'catalog.form.address': 'Adres',
+    'catalog.form.city': 'Şehir',
+    'catalog.form.country': 'Ülke',
+    'catalog.form.interests': 'İlgi Alanları (İstediğinizi seçin)',
+    'catalog.form.notes': 'Ek Notlar',
+    'catalog.form.notesPlaceholder': 'Katalog hakkında özel gereksinimleriniz veya sorularınız...',
+    'catalog.form.submit': 'Katalog Talep Et',
+    'catalog.form.submitting': 'Talep Gönderiliyor...',
+    'catalog.form.success': 'Katalog talebiniz başarıyla gönderildi! Fiziksel kataloğunuzu 5-7 iş günü içinde göndereceğiz.',
+    'catalog.form.required': 'Lütfen tüm gerekli alanları doldurun.',
+    'catalog.form.footer': '* Dünya geneline ücretsiz kargo • 5-7 iş günü teslimat • Taahhüt gerekmez',
+    
+    // Contact Page
+    'contact.title': 'İletişim',
+    'contact.getInTouch': 'İletişime Geçin',
+    'contact.description': 'Tüm tekstil ihtiyaçlarınız için bizimle iletişime geçin. 24 saat içinde yanıtlıyoruz.',
+    'contact.phone': 'Telefon',
+    'contact.whatsapp': 'WhatsApp',
+    'contact.email': 'E-posta',
+    'contact.address': 'Adres',
+    'contact.businessHours': 'Çalışma Saatleri',
+    'contact.monday': 'Pazartesi - Cuma:',
+    'contact.saturday': 'Cumartesi:',
+    'contact.sunday': 'Pazar:',
+    'contact.closed': 'Kapalı',
+    'contact.response': '✓ 24 saat içinde yanıtlıyoruz',
+    'contact.formTitle': 'Bize Mesaj Gönderin',
+    'contact.form.fullName': 'Ad Soyad',
+    'contact.form.email': 'E-posta',
+    'contact.form.phone': 'Telefon',
+    'contact.form.subject': 'Konu',
+    'contact.form.message': 'Mesaj',
+    'contact.form.contactRequired': '* En az bir iletişim yöntemi (e-posta veya telefon) gereklidir',
+    'contact.form.send': 'Mesaj Gönder',
+    'contact.form.sending': 'Gönderiliyor...',
+    'contact.form.success': 'Mesaj başarıyla gönderildi! 24 saat içinde yanıtlayacağız.',
+    'contact.form.error': 'Lütfen tüm gerekli alanları doldurun.',
+    'contact.form.subjects.productInquiry': 'Ürün Sorusu',
+    'contact.form.subjects.customOrder': 'Özel Sipariş',
+    'contact.form.subjects.bulkOrder': 'Toplu Sipariş',
+    'contact.form.subjects.pricing': 'Fiyat Bilgisi',
+    'contact.form.subjects.technical': 'Teknik Destek',
+    'contact.form.subjects.partnership': 'Ortaklık',
+    'contact.form.subjects.other': 'Diğer',
+    
+    // About Page
+    'about.title': 'Hakkımızda',
+    'about.subtitle': 'Premium kumaş ve tekstil çözümlerinde lider',
+    'about.description1': '1995 yılında kurulan Monza Tekstil, kalite ve yeniliği tekstil sektöründe bir araya getiren öncü şirketlerden biridir.',
+    'about.description2': 'Yılların deneyimi ve modern teknolojinin gücüyle, müşterilerimize en iyi hizmeti sunmayı hedefliyoruz.',
+    'about.experience': '25+ Yıl',
+    'about.experienceDesc': 'Tekstil deneyimi',
+    'about.customers': '1000+',
+    'about.customersDesc': 'Mutlu müşteri',
+    'about.countries': '50+',
+    'about.countriesDesc': 'Hizmet verilen ülke',
+    
+    // Common
+    'common.required': 'zorunlu',
+    'common.optional': 'isteğe bağlı',
+    'common.close': 'Kapat',
+    'common.loading': 'Yükleniyor...',
+    
+    // Footer
+    'footer.rights': '© 2025 MINNA. Tüm hakları saklıdır.',
+  },
+  en: {
+    // Header
+    'header.search': 'Search',
+    'header.cart': 'Cart',
+    'header.menu': 'Menu',
+    
+    // Navigation
+    'nav.home': 'Home',
+    'nav.allProducts': 'All Products',
+    'nav.catalog': 'Catalog',
+    'nav.about': 'About',
+    'nav.contact': 'Contact',
+    
+    // Home Page
+    'home.hero.title': 'Premium Fabric & Textile Collection',
+    'home.hero.subtitle': 'Discover high-quality fabrics and get customized solutions tailored to your business needs',
+    'home.hero.cta': 'Explore Collection',
+    'home.collection.title': 'New Collection',
+    'home.collection.subtitle': 'Discover the latest fabric trends and innovations',
+    'home.fabrics.title': 'Premium Fabrics',
+    'home.fabrics.subtitle': 'Browse our carefully curated fabric collection',
+    'home.seeAll': 'See all',
+    'home.pattern': 'Pattern',
+    'home.colors': 'Colors',
+    'home.stock': 'Stock',
+    'home.swatchType': 'Swatch Type',
+    'home.inStock': 'In Stock',
+    'home.outOfStock': 'Out of Stock',
+    'home.meters': 'meters',
+    
+    // Product Modal
+    'modal.getQuote': 'Get Quote',
+    'modal.contactUs': 'Contact Us',
+    'modal.freesamples': 'Free samples available • Custom lengths available • Professional consultation',
+    'modal.pricePerMeter': 'Price per meter',
+    'modal.description.solid': 'This premium fabric stands out with its elegant design and superior quality. Produced using modern processes, this fabric is a perfect choice for those seeking both comfort and elegance.',
+    'modal.description.contemporary': 'This fabric series, specially developed for contemporary designs, attracts attention with its features suitable for modern lifestyle. It is created by combining high-quality fibers and innovative weaving techniques.',
+    'modal.description.textured': 'With its textured surface and unique feel, this premium fabric is an ideal choice for your special projects. It is produced using handicraft details and quality materials.',
+    'modal.description.classic': 'This fabric series that combines classic elegance with modern quality is perfect for timeless designs. It is carefully produced to preserve its beauty for many years.',
+    
+    // Products Page
+    'products.title': 'All Products',
+    'products.subtitle': 'Discover our premium fabric collection',
+    'products.search': 'Search products...',
+    'products.allPatterns': 'All Patterns',
+    'products.allColors': 'All Colors',
+    'products.inStockOnly': 'In Stock Only',
+    'products.sortBy': 'Sort By',
+    'products.newest': 'Newest',
+    'products.priceHigh': 'Price (High-Low)',
+    'products.priceLow': 'Price (Low-High)',
+    'products.name': 'Name',
+    'products.noResults': 'No products found',
+    'products.noResultsDesc': 'Try adjusting your search or filter criteria.',
+    'products.clearFilters': 'Clear All Filters',
+    'products.showing': 'Showing {count} products',
+    
+    // Catalog Page
+    'catalog.title': 'Fabric Catalog',
+    'catalog.subtitle': 'Discover our complete collection of premium fabrics and textiles. Request a physical catalog to explore our full range with actual fabric samples.',
+    'catalog.physicalTitle': 'Physical Catalog',
+    'catalog.physicalDesc': 'Our comprehensive physical catalog includes actual fabric samples, detailed specifications, pricing information, and application guides. Perfect for designers, manufacturers, and businesses who need to feel and examine fabric quality.',
+    'catalog.features.samples': 'Over 200 fabric samples',
+    'catalog.features.specs': 'Detailed specifications and care instructions',
+    'catalog.features.pricing': 'Professional pricing and minimum order quantities',
+    'catalog.features.shipping': 'Free shipping worldwide',
+    'catalog.sectionsTitle': 'Catalog Sections',
+    'catalog.premiumWool': 'Premium Wool',
+    'catalog.premiumWoolDesc': 'High-quality wool fabrics for luxury garments',
+    'catalog.cottonBlends': 'Cotton Blends',
+    'catalog.cottonBlendsDesc': 'Comfortable and versatile cotton fabric blends',
+    'catalog.silkCollection': 'Silk Collection',
+    'catalog.silkCollectionDesc': 'Elegant silk fabrics for special occasions',
+    'catalog.technicalFabrics': 'Technical Fabrics',
+    'catalog.technicalFabricsDesc': 'Performance fabrics for industrial applications',
+    'catalog.seasonal': 'Seasonal Collection',
+    'catalog.seasonalDesc': 'Limited edition seasonal fabric designs',
+    'catalog.custom': 'Custom Solutions',
+    'catalog.customDesc': 'Bespoke fabric development and customization',
+    'catalog.requestTitle': 'Request Physical Catalog',
+    'catalog.requestDesc': 'Fill out the form below to receive our complete physical catalog with fabric samples. Delivery typically takes 5-7 business days.',
+    'catalog.form.fullName': 'Full Name',
+    'catalog.form.company': 'Company',
+    'catalog.form.email': 'Email',
+    'catalog.form.phone': 'Phone',
+    'catalog.form.address': 'Address',
+    'catalog.form.city': 'City',
+    'catalog.form.country': 'Country',
+    'catalog.form.interests': 'Areas of Interest (Select all that apply)',
+    'catalog.form.notes': 'Additional Notes',
+    'catalog.form.notesPlaceholder': 'Any specific requirements or questions about the catalog...',
+    'catalog.form.submit': 'Request Catalog',
+    'catalog.form.submitting': 'Submitting Request...',
+    'catalog.form.success': 'Catalog request submitted successfully! We will send your physical catalog within 5-7 business days.',
+    'catalog.form.required': 'Please fill in all required fields.',
+    'catalog.form.footer': '* Free worldwide shipping • 5-7 business days delivery • No commitment required',
+    
+    // Contact Page
+    'contact.title': 'Contact Us',
+    'contact.getInTouch': 'Get in Touch',
+    'contact.description': 'Get in touch with us for all your textile needs. We respond within 24 hours.',
+    'contact.phone': 'Phone',
+    'contact.whatsapp': 'WhatsApp',
+    'contact.email': 'Email',
+    'contact.address': 'Address',
+    'contact.businessHours': 'Business Hours',
+    'contact.monday': 'Monday - Friday:',
+    'contact.saturday': 'Saturday:',
+    'contact.sunday': 'Sunday:',
+    'contact.closed': 'Closed',
+    'contact.response': '✓ We respond within 24 hours',
+    'contact.formTitle': 'Send us a Message',
+    'contact.form.fullName': 'Full Name',
+    'contact.form.email': 'Email',
+    'contact.form.phone': 'Phone',
+    'contact.form.subject': 'Subject',
+    'contact.form.message': 'Message',
+    'contact.form.contactRequired': '* At least one contact method (email or phone) is required',
+    'contact.form.send': 'Send Message',
+    'contact.form.sending': 'Sending...',
+    'contact.form.success': 'Message sent successfully! We will respond within 24 hours.',
+    'contact.form.error': 'Please fill in all required fields.',
+    'contact.form.subjects.productInquiry': 'Product Inquiry',
+    'contact.form.subjects.customOrder': 'Custom Order',
+    'contact.form.subjects.bulkOrder': 'Bulk Order',
+    'contact.form.subjects.pricing': 'Pricing Information',
+    'contact.form.subjects.technical': 'Technical Support',
+    'contact.form.subjects.partnership': 'Partnership',
+    'contact.form.subjects.other': 'Other',
+    
+    // About Page
+    'about.title': 'About Us',
+    'about.subtitle': 'Leading in premium fabric and textile solutions',
+    'about.description1': 'Founded in 1995, Monza Tekstil is a leading provider of premium quality fabrics and textiles. We specialize in high-end materials for fashion, upholstery, and industrial applications.',
+    'about.description2': 'Our commitment to quality and customer service has made us a trusted partner for designers, manufacturers, and businesses worldwide.',
+    'about.experience': '25+ Years',
+    'about.experienceDesc': 'Experience in textiles',
+    'about.customers': '1000+',
+    'about.customersDesc': 'Happy customers',
+    'about.countries': '50+',
+    'about.countriesDesc': 'Countries served',
+    
+    // Common
+    'common.required': 'required',
+    'common.optional': 'optional',
+    'common.close': 'Close',
+    'common.loading': 'Loading...',
+    
+    // Footer
+    'footer.rights': '© 2025 MINNA. All rights reserved.',
+  }
+}
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('language') || 'en'
+  })
+
+  const changeLanguage = (lang) => {
+    setLanguage(lang)
+    localStorage.setItem('language', lang)
+  }
+
+  const t = (key, params = {}) => {
+    let translation = translations[language][key] || key
+    
+    // Replace parameters in translation
+    Object.keys(params).forEach(param => {
+      translation = translation.replace(`{${param}}`, params[param])
+    })
+    
+    return translation
+  }
+
+  return (
+    <LanguageContext.Provider value={{ language, changeLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  )
+}
 
 // Modern Header Component
 function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
+  const { language, changeLanguage, t } = useLanguage()
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setIsLanguageDropdownOpen(false)
+    }
+    
+    if (isLanguageDropdownOpen) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [isLanguageDropdownOpen])
   
   return (
     <>
@@ -28,14 +395,66 @@ function Header() {
               </a>
             </div>
             
-            {/* Search & Cart Icons */}
+            {/* Search, Language Toggle & Cart Icons */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900">
+              <button className="p-2 text-gray-600 hover:text-gray-900" title={t('header.search')}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900">
+              
+              {/* Language Toggle */}
+              <div className="relative" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsLanguageDropdownOpen(!isLanguageDropdownOpen)
+                  }}
+                  className="p-2 text-gray-600 hover:text-gray-900 flex items-center space-x-1"
+                  title="Change Language / Dil Değiştir"
+                >
+                  <Flag 
+                    country={language === 'tr' ? 'TR' : 'GB'} 
+                    size={24} 
+                    className="rounded-sm"
+                  />
+                </button>
+                
+                {/* Language Dropdown */}
+                <AnimatePresence>
+                  {isLanguageDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 top-full mt-2 w-36 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                    >
+                      <button
+                        onClick={() => {
+                          changeLanguage('en')
+                          setIsLanguageDropdownOpen(false)
+                        }}
+                        className={`w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-3 ${language === 'en' ? 'bg-blue-50' : ''}`}
+                      >
+                        <Flag country="GB" size={20} className="rounded-sm" />
+                        <span className="text-sm font-medium">English</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          changeLanguage('tr')
+                          setIsLanguageDropdownOpen(false)
+                        }}
+                        className={`w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-3 ${language === 'tr' ? 'bg-blue-50' : ''}`}
+                      >
+                        <Flag country="TR" size={20} className="rounded-sm" />
+                        <span className="text-sm font-medium">Türkçe</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              
+              <button className="p-2 text-gray-600 hover:text-gray-900" title={t('header.cart')}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6.5 0a2 2 0 100 4 2 2 0 000-4zm-6 0a2 2 0 100 4 2 2 0 000-4z" />
                 </svg>
@@ -81,13 +500,13 @@ function Header() {
                 </div>
                 <nav className="space-y-4">
                   {[
-                    { name: 'All Products', path: '/products' },
-                    { name: 'Catalog', path: '/catalog' },
-                    { name: 'About Us', path: '/about' },
-                    { name: 'Contact', path: '/contact' }
+                    { name: t('nav.allProducts'), path: '/products' },
+                    { name: t('nav.catalog'), path: '/catalog' },
+                    { name: t('nav.about'), path: '/about' },
+                    { name: t('nav.contact'), path: '/contact' }
                   ].map((item, index) => (
                     <motion.a 
-                      key={item.name}
+                      key={item.path}
                       href={item.path}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -109,6 +528,8 @@ function Header() {
 
 // Modern Footer Component
 function Footer() {
+  const { t } = useLanguage()
+  
   return (
     <footer className="bg-black text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -139,7 +560,7 @@ function Footer() {
             </a>
           </div>
           
-          <p className="text-gray-400 text-sm">© 2025 MINNA. All rights reserved.</p>
+          <p className="text-gray-400 text-sm">{t('footer.rights')}</p>
         </div>
       </div>
     </footer>
@@ -148,6 +569,8 @@ function Footer() {
 
 // Product Modal Component
 function ProductModal({ product, isOpen, onClose }) {
+  const { t } = useLanguage()
+  
   if (!isOpen || !product) return null
 
   return (
@@ -310,6 +733,7 @@ function ProductModal({ product, isOpen, onClose }) {
 
 // Modern HomePage
 function HomePage() {
+  const { t } = useLanguage()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -478,7 +902,7 @@ function HomePage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="text-5xl md:text-6xl font-bold text-white mb-6"
             >
-              Premium Fabrics
+              {t('home.hero.title')}
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -486,7 +910,7 @@ function HomePage() {
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
               className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto"
             >
-              Discover our curated collection of high-quality textiles and modern designs
+              {t('home.hero.subtitle')}
             </motion.p>
             <motion.a 
               href="/products"
@@ -497,7 +921,7 @@ function HomePage() {
               whileTap={{ scale: 0.95 }}
               className="inline-block bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-colors"
             >
-              Explore Collection
+              {t('home.hero.cta')}
             </motion.a>
           </div>
         </div>
@@ -690,6 +1114,7 @@ function HomePage() {
 }
 
 function ProductsPage() {
+  const { t } = useLanguage()
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -1146,6 +1571,8 @@ function ProductsPage() {
 }
 
 function AboutPage() {
+  const { t } = useLanguage()
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -1195,6 +1622,7 @@ function AboutPage() {
 }
 
 function ContactPage() {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -1481,6 +1909,7 @@ function ContactPage() {
 }
 
 function CatalogPage() {
+  const { t } = useLanguage()
   const [catalogRequest, setCatalogRequest] = useState({
     fullName: '',
     company: '',
@@ -1832,13 +2261,15 @@ function CatalogPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/products" element={<ProductsPage />} />
-      <Route path="/catalog" element={<CatalogPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-    </Routes>
+    <LanguageProvider>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/catalog" element={<CatalogPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+      </Routes>
+    </LanguageProvider>
   )
 }
 
